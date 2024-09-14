@@ -49,19 +49,37 @@ def olci_layout():
             html.Div([
                 dl.Map(
                     [
-                        dl.TileLayer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", id="base-layer"),
+                        # Ocean Basemap
+                        dl.TileLayer(
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
+                            # attribution='Tiles &copy; Esri &mdash; Source: Esri, GEBCO, NOAA, National Geographic, DeLorme, NAVTEQ, and Esri',
+                            id="ocean-basemap"
+                        ),
                         dl.LayerGroup(id="points-layer"),
                         dl.LayerGroup(id="highlighted-layer"),  # For highlighted polygons
                         dl.LayersControl(
                             [
-                                dl.BaseLayer(dl.TileLayer(), name="OpenStreetMap", checked=True),
-                                dl.BaseLayer(dl.TileLayer(url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"), name="TopoMap"),
+                                dl.BaseLayer(
+                                    dl.TileLayer(
+                                        url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"
+                                    ), name="Ocean Basemap", checked=True
+                                ),
+                                dl.BaseLayer(
+                                    dl.TileLayer(
+                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    ), name="OpenStreetMap"
+                                ),
                                 dl.Overlay(dl.LayerGroup(id="points-layer"), name="Points", checked=False),
+                                dl.Overlay(
+                                    dl.LayerGroup(
+                                        [dl.GeoJSON(data=geojson_data[name], id=f"geojson-{name}") for name in geojson_data]
+                                    ), name="Polygon", checked=False
+                                ),
                             ], position="topright"
                         )
                     ],
-                    style={'width': '100%', 'height': '600px'},
-                    center=[-32.1, 115.7], zoom=10, id="olci-map"
+                    style={'width': '100%', 'height': '680px'},
+                center=[-32.1, 115.4], zoom=9, id="olci-map"
                 )
             ], className='left-panel'),  # CSS class for map responsiveness
 

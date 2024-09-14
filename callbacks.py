@@ -163,7 +163,6 @@ def register_callbacks(app):
         # Convert 'time' column to datetime if it exists
         if 'time' in df.columns:
             df['time'] = pd.to_datetime(df['time'])
-
         # Filter data by date range
         if start_date and end_date:
             df = df[(df['time'] >= start_date) & (df['time'] <= end_date)]
@@ -177,7 +176,8 @@ def register_callbacks(app):
                 family="Times New Roman",
                 size=18,  # You can adjust the size as needed
                 color="Black"  # You can adjust the color as needed
-            )
+            ),
+            template="simple_white"  # Change the template as needed
         )
 
         return fig
