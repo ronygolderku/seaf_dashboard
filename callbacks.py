@@ -4,28 +4,15 @@ import pandas as pd
 import plotly.express as px
 import geopandas as gpd
 from dash import Input, Output, State, dcc, html
-from dotenv import load_dotenv
 from dash import Input, Output, State
 from pages.home import home_layout
 import dash_leaflet as dl
 #ghrsst_mur_layout, reflectance_layout, plankton_layout
-from pages.data_viz import olci_layout, create_points_layer, points_df, geojson_data
-
-
-# Load environment variables
-load_dotenv()
-
-# Initialize S3 client
-session = boto3.Session()
-s3_client = session.client(
-    's3',
-    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-    endpoint_url=os.getenv('AWS_S3_ENDPOINT'),
-    region_name=os.getenv('AWS_DEFAULT_REGION')
-)
+from pages.data_viz import olci_layout, ghrsst_mur_layout, plankton_layout, reflectance_layout, create_points_layer, points_df, geojson_data
+from s3_fetch import s3_client, fetch_data_from_s3
 
 polygon_key_mapping = {str(i): f"Polygons_{i}_MultiPolygon.shp" for i in range(1, 7)}  # Ensure ".shp" extension
+
 
 def register_callbacks(app):
     @app.callback(
@@ -97,12 +84,12 @@ def register_callbacks(app):
     def display_page(pathname):
         if pathname == "/esa/sentinel/olci":
             return olci_layout()
-        # elif pathname == "/nasa/ghrsst/mur":
-        #     return ghrsst_mur_layout()
-        # elif pathname == "/esa/globcolor/reflectance":
-        #     return reflectance_layout()
-        # elif pathname == "/esa/globcolor/plankton":
-        #     return plankton_layout()
+        elif pathname == "/nasa/ghrsst/mur":
+            return ghrsst_mur_layout()
+        elif pathname == "/esa/globcolor/reflectance":
+            return reflectance_layout()
+        elif pathname == "/esa/globcolor/plankton":
+            return plankton_layout()
         return home_layout()
     
     @app.callback(
@@ -118,6 +105,34 @@ def register_callbacks(app):
         return {'display': 'none'}, {'display': 'none'}
     
     @app.callback(
+        [Output("start-date-picker", "date"),
+        Output("end-date-picker", "date")],
+        [Input("aoi-selector", "value"),
+        Input("coordinate-input-point", "value"),
+        Input("coordinate-input-polygon", "value"),
+        Input("variable-selector", "value"),
+        Input("dataset-type", "value")]
+    )
+    def update_date_pickers(aoi_type, point_coordinate, polygon_coordinate, variable, dataset_type):
+        # Determine the coordinate based on AOI type
+        coordinate = point_coordinate if aoi_type == 'point' else polygon_coordinate
+
+        # Fetch data from S3 and process it
+        try:
+            df, _ = fetch_data_from_s3(s3_client, 'wamsi-westport-project-1-1', dataset_type, aoi_type, coordinate, variable)
+            if df is None:
+                return None, None
+        except Exception as e:
+            print(f"Error fetching data from S3: {e}")
+            return None, None
+
+        # Extract start and end dates
+        start_date = df['time'].min()
+        end_date = df['time'].max()
+
+        return start_date, end_date
+
+    @app.callback(
         Output("output-plot", "figure"),
         [Input("plot-button", "n_clicks")],
         [State("coordinate-input-point", "value"),
@@ -132,30 +147,14 @@ def register_callbacks(app):
         if n_clicks is None:
             return {}
 
-        # Determine the S3 key and title based on dataset type and AOI type
-        if dataset_type == "olci":
-            if aoi_type == 'point':
-                coordinate = point_coordinate
-                if coordinate is None:
-                    return {}
-                s3_key = f'csiem-data/data-lake/ESA/Sentinel/Points/CMEMS_OLCI_CHL_point_{coordinate}.csv'
-                title = f'{variable} Timeseries for Point {coordinate}'
-            elif aoi_type == 'polygon':
-                coordinate = polygon_coordinate
-                if coordinate is None:
-                    return {}
-                s3_key = f'csiem-data/data-lake/ESA/Sentinel/Polygon_offshore/CMEMS_OLCI_CHL_polygon_{coordinate}.csv'
-                title = f'{variable} Timeseries for Polygon {coordinate}'
-            else:
-                return {}
-        if s3_key is None:
-            print("S3 key is None, unable to construct S3 key")
-            return {}
+        # Determine the coordinate based on AOI type
+        coordinate = point_coordinate if aoi_type == 'point' else polygon_coordinate
 
         # Fetch data from S3 and process it
         try:
-            response = s3_client.get_object(Bucket='wamsi-westport-project-1-1', Key=s3_key)
-            df = pd.read_csv(response['Body'])
+            df, title = fetch_data_from_s3(s3_client, 'wamsi-westport-project-1-1', dataset_type, aoi_type, coordinate, variable)
+            if df is None or title is None:
+                return {}
         except Exception as e:
             print(f"Error fetching data from S3: {e}")
             return {}

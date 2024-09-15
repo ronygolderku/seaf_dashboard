@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import dash_leaflet as dl
 from dash import dcc, html
+from data_info import olci, ghrsst, plankton, reflectance
 
 # Load shapefiles and CSV
 points_df = pd.read_csv("C:/Users/admin/Downloads/WAMSI/points.csv")
@@ -38,9 +39,10 @@ def create_points_layer(selected_point=None):
     return points_layer
 
 
-def olci_layout():
+# Create a generic layout function
+def create_layout(title, map_id, variable_options, dataset_type, geojson_data, point_range, dataset_info):
     return html.Div([
-        html.H2("Sentinel OLCI Data", className="heading"),
+        html.H2(title, className="heading"),
         html.Hr(),
 
         # Create a two-column layout
@@ -52,7 +54,6 @@ def olci_layout():
                         # Ocean Basemap
                         dl.TileLayer(
                             url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
-                            # attribution='Tiles &copy; Esri &mdash; Source: Esri, GEBCO, NOAA, National Geographic, DeLorme, NAVTEQ, and Esri',
                             id="ocean-basemap"
                         ),
                         dl.LayerGroup(id="points-layer"),
@@ -79,23 +80,21 @@ def olci_layout():
                         )
                     ],
                     style={'width': '100%', 'height': '680px'},
-                center=[-32.1, 115.4], zoom=9, id="olci-map"
+                    center=[-32.1, 115.4], zoom=9, id=map_id
                 )
             ], className='left-panel'),  # CSS class for map responsiveness
 
-            # Right side: OLCI content (variable selector, AOI selector, date picker, plot button)
+            # Right side: content (variable selector, AOI selector, date picker, plot button)
             html.Div([
                 dcc.Tabs([
-                    dcc.Tab(label='Sentinel Chl', children=[
+                    dcc.Tab(label=f'{title} Data', children=[
                         html.Div([
                             html.Div([
                                 html.Div([
                                     html.Label("Select Variable"),
                                     dcc.Dropdown(
                                         id="variable-selector",
-                                        options=[
-                                            {'label': 'Chlorophyll-a [mg/m³]', 'value': 'CHL'},
-                                        ],
+                                        options=variable_options,
                                         className="input-dropdown"  # Add a specific class
                                     )
                                 ], className="input-group"),
@@ -111,14 +110,14 @@ def olci_layout():
                                         className="input-dropdown"
                                     )
                                 ], className="input-group"),
-                                
+
                                 # Conditional Point/Polygon Selector
                                 html.Div([
                                     html.Div([
                                         html.Label("Select Point"),
                                         dcc.Dropdown(
                                             id="coordinate-input-point",
-                                            options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, 33)],
+                                            options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, point_range + 1)],
                                             className="input-dropdown"
                                         )
                                     ], id='point-selector', style={'display': 'none'}),
@@ -155,7 +154,7 @@ def olci_layout():
                                 ], className="input-date-range"),
 
                                 # Hidden Input for Dataset Type
-                                dcc.Input(id="dataset-type", type="hidden", value="olci"),
+                                dcc.Input(id="dataset-type", type="hidden", value=dataset_type),
 
                                 # Plot Button
                                 html.Button('Plot', id='plot-button', className="plot-btn"),
@@ -164,14 +163,14 @@ def olci_layout():
                                 dcc.Graph(id='output-plot', className="graph-output"),
                             ], className="controls-container")
                         ]),
-                        
+
                         # Hidden div to store map update trigger
                         dcc.Store(id="highlight-data")
                     ]),
                     dcc.Tab(label='About', children=[
                         html.Div([
-                            html.H3('About the Dataset'),
-                            html.P('This section provides information about the dataset sources, methodologies, and other relevant details.'),
+                            html.H3('Dataset Information'),
+                            html.P(dataset_info),
                         ], style={'padding': '20px'})
                     ])
                 ], className="tabs-container"),
@@ -179,308 +178,36 @@ def olci_layout():
         ], className='main-content')  # Flex container for main content
     ], className='layout-wrapper')
 
+# Now use the generic function to create specific layouts
+def olci_layout():
+    variable_options = [{'label': 'Chlorophyll-a [mg/m³]', 'value': 'CHL'}]
+    return create_layout("Sentinel OLCI", "olci-map", variable_options, "olci", geojson_data, 33, olci)
 
+def ghrsst_mur_layout():
+    variable_options = [{'label': 'Sea Surface Temperature [°C]', 'value': 'analysed_sst'}]
+    return create_layout("GHRSST MUR", "ghrsst-map", variable_options, "ghrsst", geojson_data, 33, ghrsst)
 
+def plankton_layout():
+    variable_options = [
+        {'label': 'Chlorophyll-a [mg m⁻³]', 'value': 'CHL'},
+        {'label': 'Diatoms [mg m⁻³]', 'value': 'DIATO'},
+        {'label': 'Dinoflagellates [mg m⁻³]', 'value': 'DINO'},
+        {'label': 'Green Algae [mg m⁻³]', 'value': 'GREEN'},
+        {'label': 'Haptophytes [mg m⁻³]', 'value': 'HAPTO'},
+        {'label': 'Microplankton [mg m⁻³]', 'value': 'MICRO'},
+        {'label': 'Nanoplankton [mg m⁻³]', 'value': 'NANO'},
+        {'label': 'Picoplankton [mg m⁻³]', 'value': 'PICO'},
+        {'label': 'Prochlorococcus [mg m⁻³]', 'value': 'PROCHLO'},
+        {'label': 'Prokaryotes [mg m⁻³]', 'value': 'PROKAR'},
+    ]
+    return create_layout("Globecolor Plankton", "plankton-map", variable_options, "plankton", geojson_data, 14, plankton)
 
-# from dash import dcc, html
-# import dash_leaflet as dl
-
-# def ghrsst_mur_layout():
-#     return html.Div([
-#         html.H2("GHRSST MUR Data"),
-
-#         # Create a two-column layout
-#         html.Div([
-#             # Left side: Leaflet map
-#             html.Div([
-#                 dl.Map(
-#                     [
-#                         dl.TileLayer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", id="base-layer"),
-#                         dl.LayerGroup(children=points_layer, id="points-layer"),
-#                         dl.LayersControl(
-#                             [
-#                                 dl.BaseLayer(dl.TileLayer(), name="OpenStreetMap", checked=True),
-#                                 dl.BaseLayer(dl.TileLayer(url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"), name="TopoMap"),
-#                                 dl.Overlay(study_area2_geojson, name="Offshore", checked=False),
-#                                 dl.Overlay(dl.LayerGroup(children=points_layer), name="Points", checked=True),
-#                             ], position="topright"
-#                         )
-#                     ],
-#                     style={'width': '100%', 'height': '600px'},
-#                     center=[-32.1, 115.7], zoom=10, id="ghrsst-map"
-#                 )
-#             ], style={'width': '30%', 'display': 'inline-block', 'verticalAlign': 'top'}),
-
-#             # Right side: Controls and plot
-#             html.Div([
-
-#                 # Variable Selector Dropdown with Label
-#                 html.Label("Select Variable"),
-#                 dcc.Dropdown(
-#                     id="variable-selector",
-#                     options=[
-#                         {'label': 'Sea Surface Temperature [°C]', 'value': 'analysed_sst'},
-#                         # Add more options if needed
-#                     ]
-#                 ),
-
-#                 # AOI Type Dropdown with Label
-#                 html.Label("Select AOI Type"),
-#                 dcc.Dropdown(
-#                     id="aoi-selector",
-#                     options=[
-#                         {'label': 'Point', 'value': 'point'},
-#                         {'label': 'Polygon', 'value': 'polygon'}
-#                     ]
-#                 ),
-
-#                 # Conditional Point/Polygon Selector (initially hidden, shown based on AOI type)
-#                 html.Div([
-#                     html.Div([
-#                         html.Label("Select Point"),
-#                         dcc.Dropdown(
-#                             id="coordinate-input-point",
-#                             options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, 33)]
-#                         )
-#                     ], id='point-selector', style={'display': 'none'}),
-
-#                     html.Div([
-#                         html.Label("Select Polygon"),
-#                         dcc.Dropdown(
-#                             id="coordinate-input-polygon",
-#                             options=[{'label': f'Polygon {i}', 'value': str(i)} for i in range(1, 7)]
-#                         )
-#                     ], id='polygon-selector', style={'display': 'none'})
-#                 ]),
-#                 # Date Range Pickers with Labels
-#                 html.Div([
-#                     html.Label("From"),
-#                     dcc.DatePickerSingle(
-#                         id="start-date-picker",
-#                         placeholder="Start Date"
-#                     ),
-#                 ], style={'display': 'inline-block', 'marginRight': '10px'}),
-
-#                 html.Div([
-#                     html.Label("To"),
-#                     dcc.DatePickerSingle(
-#                         id="end-date-picker",
-#                         placeholder="End Date"
-#                     ),
-#                 ], style={'display': 'inline-block'}),
-
-#                 dcc.Input(id="dataset-type", type="hidden", value="ghrsst"),
-
-#                 # Plot Button
-#                 html.Button('Plot', id='plot-button'),
-
-#                 # Graph Output
-#                 dcc.Graph(id='output-plot'),
-#             ], style={'width': '65%', 'display': 'inline-block', 'verticalAlign': 'top', 'marginLeft': '5%'})
-#         ])
-#     ])
-
-
-# def reflectance_layout():
-#     return html.Div([
-#         html.H2("Globecolor Reflectance Data"),
-
-#         # Create a two-column layout
-#         html.Div([
-#             # Left side: Leaflet map
-#             html.Div([
-#                 dl.Map(
-#                     [
-#                         dl.TileLayer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", id="base-layer"),
-#                         dl.LayerGroup(children=points_layer, id="points-layer"),
-#                         dl.LayersControl(
-#                             [
-#                                 dl.BaseLayer(dl.TileLayer(), name="OpenStreetMap", checked=True),
-#                                 dl.BaseLayer(dl.TileLayer(url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"), name="TopoMap"),
-#                                 dl.Overlay(study_area2_geojson, name="Offshore", checked=False),
-#                                 dl.Overlay(dl.LayerGroup(children=points_layer), name="Points", checked=True),
-#                             ], position="topright"
-#                         )
-#                     ],
-#                     style={'width': '100%', 'height': '600px'},
-#                     center=[-32.1, 115.7], zoom=10, id="ghrsst-map"
-#                 )
-#             ], style={'width': '30%', 'display': 'inline-block', 'verticalAlign': 'top'}),
-
-#             # Right side: Controls and plot
-#             html.Div([
-
-#                 # Variable Selector Dropdown with Label
-#                 html.Label("Select Variable"),
-#                 dcc.Dropdown(
-#                     id="variable-selector",
-#                     options=[
-#                         {'label': 'Remote Sensing Reflectance at 412nm [sr⁻¹]', 'value': 'RRS412'},
-#                         {'label': 'Remote Sensing Reflectance at 443nm [sr⁻¹]', 'value': 'RRS443'},
-#                         {'label': 'Remote Sensing Reflectance at 490nm [sr⁻¹]', 'value': 'RRS490'},
-#                         {'label': 'Remote Sensing Reflectance at 555nm [sr⁻¹]', 'value': 'RRS510'},
-#                         {'label': 'Remote Sensing Reflectance at 670nm [sr⁻¹]', 'value': 'RRS670'},
-#                         # Add more options if needed
-#                     ]
-#                 ),
-
-#                 # AOI Type Dropdown with Label
-#                 html.Label("Select AOI Type"),
-#                 dcc.Dropdown(
-#                     id="aoi-selector",
-#                     options=[
-#                         {'label': 'Point', 'value': 'point'},
-#                         {'label': 'Polygon', 'value': 'polygon'}
-#                     ]
-#                 ),
-
-#                 # Conditional Point/Polygon Selector (initially hidden, shown based on AOI type)
-#                 html.Div([
-#                     html.Div([
-#                         html.Label("Select Point"),
-#                         dcc.Dropdown(
-#                             id="coordinate-input-point",
-#                             options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, 14)]
-#                         )
-#                     ], id='point-selector', style={'display': 'none'}),
-
-#                     html.Div([
-#                         html.Label("Select Polygon"),
-#                         dcc.Dropdown(
-#                             id="coordinate-input-polygon",
-#                             options=[{'label': f'Polygon {i}', 'value': str(i)} for i in range(1, 7)]
-#                         )
-#                     ], id='polygon-selector', style={'display': 'none'})
-#                 ]),
-#                 # Date Range Pickers with Labels
-#                 html.Div([
-#                     html.Label("From"),
-#                     dcc.DatePickerSingle(
-#                         id="start-date-picker",
-#                         placeholder="Start Date"
-#                     ),
-#                 ], style={'display': 'inline-block', 'marginRight': '10px'}),
-
-#                 html.Div([
-#                     html.Label("To"),
-#                     dcc.DatePickerSingle(
-#                         id="end-date-picker",
-#                         placeholder="End Date"
-#                     ),
-#                 ], style={'display': 'inline-block'}),
-
-#                 dcc.Input(id="dataset-type", type="hidden", value="reflectance"),
-
-#                 # Plot Button
-#                 html.Button('Plot', id='plot-button'),
-
-#                 # Graph Output
-#                 dcc.Graph(id='output-plot'),
-#             ], style={'width': '65%', 'display': 'inline-block', 'verticalAlign': 'top', 'marginLeft': '5%'})
-#         ])
-#     ])
-
-# def plankton_layout():
-#     return html.Div([
-#         html.H2("Globecolor Plankton Data"),
-
-#         # Create a two-column layout
-#         html.Div([
-#             # Left side: Leaflet map
-#             html.Div([
-#                 dl.Map(
-#                     [
-#                         dl.TileLayer(url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", id="base-layer"),
-#                         dl.LayerGroup(children=points_layer, id="points-layer"),
-#                         dl.LayersControl(
-#                             [
-#                                 dl.BaseLayer(dl.TileLayer(), name="OpenStreetMap", checked=True),
-#                                 dl.BaseLayer(dl.TileLayer(url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"), name="TopoMap"),
-#                                 dl.Overlay(study_area2_geojson, name="Offshore", checked=False),
-#                                 dl.Overlay(dl.LayerGroup(children=points_layer), name="Points", checked=True),
-#                             ], position="topright"
-#                         )
-#                     ],
-#                     style={'width': '100%', 'height': '600px'},
-#                     center=[-32.1, 115.7], zoom=10, id="ghrsst-map"
-#                 )
-#             ], style={'width': '30%', 'display': 'inline-block', 'verticalAlign': 'top'}),
-
-#             # Right side: Controls and plot
-#             html.Div([
-
-#                 # Variable Selector Dropdown with Label
-#                 html.Label("Select Variable"),
-#                 dcc.Dropdown(
-#                     id="variable-selector",
-#                     options=[
-#                         {'label': 'Chlorophyll-a [mg m⁻³]', 'value': 'CHL'},
-#                         {'label': 'Diatoms [mg m⁻³]', 'value': 'DIATO'},
-#                         {'label': 'Dinoflagellates [mg m⁻³]', 'value': 'DINO'},
-#                         {'label': 'Green Algae [mg m⁻³]', 'value': 'GREEN'},
-#                         {'label': 'Haptophytes [mg m⁻³]', 'value': 'HAPTO'},
-#                         {'label': 'Microplankton [mg m⁻³]', 'value': 'MICRO'},
-#                         {'label': 'Nanoplankton [mg m⁻³]', 'value': 'NANO'},
-#                         {'label': 'Picoplankton [mg m⁻³]', 'value': 'PICO'},
-#                         {'label': 'Prochlorococcus [mg m⁻³]', 'value': 'PROCHLO'},
-#                         {'label': 'Prokaryotes [mg m⁻³]', 'value': 'PROKAR'},
-
-#                         # Add more options if needed
-#                     ]
-#                 ),
-
-#                 # AOI Type Dropdown with Label
-#                 html.Label("Select AOI Type"),
-#                 dcc.Dropdown(
-#                     id="aoi-selector",
-#                     options=[
-#                         {'label': 'Point', 'value': 'point'},
-#                         {'label': 'Polygon', 'value': 'polygon'}
-#                     ]
-#                 ),
-
-#                 # Conditional Point/Polygon Selector (initially hidden, shown based on AOI type)
-#                 html.Div([
-#                     html.Div([
-#                         html.Label("Select Point"),
-#                         dcc.Dropdown(
-#                             id="coordinate-input-point",
-#                             options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, 14)]
-#                         )
-#                     ], id='point-selector', style={'display': 'none'}),
-
-#                     html.Div([
-#                         html.Label("Select Polygon"),
-#                         dcc.Dropdown(
-#                             id="coordinate-input-polygon",
-#                             options=[{'label': f'Polygon {i}', 'value': str(i)} for i in range(1, 7)]
-#                         )
-#                     ], id='polygon-selector', style={'display': 'none'})
-#                 ]),
-#                 # Date Range Pickers with Labels
-#                 html.Div([
-#                     html.Label("From"),
-#                     dcc.DatePickerSingle(
-#                         id="start-date-picker",
-#                         placeholder="Start Date"
-#                     ),
-#                 ], style={'display': 'inline-block', 'marginRight': '10px'}),
-
-#                 html.Div([
-#                     html.Label("To"),
-#                     dcc.DatePickerSingle(
-#                         id="end-date-picker",
-#                         placeholder="End Date"
-#                     ),
-#                 ], style={'display': 'inline-block'}),
-
-#                 dcc.Input(id="dataset-type", type="hidden", value="plankton"),
-
-#                 # Plot Button
-#                 html.Button('Plot', id='plot-button'),
-
-#                 # Graph Output
-#                 dcc.Graph(id='output-plot'),
-#             ], style={'width': '65%', 'display': 'inline-block', 'verticalAlign': 'top', 'marginLeft': '5%'})
-#         ])
-#     ])
+def reflectance_layout():
+    variable_options = [
+        {'label': 'RS reflectance at 412nm [sr⁻¹]', 'value': 'RRS412'},
+        {'label': 'RS reflectance at 443nm [sr⁻¹]', 'value': 'RRS443'},
+        {'label': 'RS reflectance at 490nm [sr⁻¹]', 'value': 'RRS490'},
+        {'label': 'RS reflectance at 555nm [sr⁻¹]', 'value': 'RRS510'},
+        {'label': 'RS reflectance at 670nm [sr⁻¹]', 'value': 'RRS670'},
+    ]
+    return create_layout("Globecolor reflectance", "reflectance-map", variable_options, "reflectance", geojson_data, 14, reflectance)
