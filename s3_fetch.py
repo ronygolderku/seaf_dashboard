@@ -30,7 +30,7 @@ def fetch_data_from_s3(s3_client, bucket, dataset_type, aoi_type, coordinate, va
             if coordinate is not None:
                 s3_key = f'csiem-data/data-lake/ESA/Sentinel/Polygon_offshore/CMEMS_OLCI_CHL_polygon_{coordinate}.csv'
                 title = f'{variable} Timeseries for Polygon {coordinate}'
-    elif dataset_type == "ghrsst":
+    elif dataset_type == "mur":
         if aoi_type == 'point':
             if coordinate is not None:
                 s3_key = f'csiem-data/data-lake/NASA/GHRSST/Points/ghrsst_sst_point_{coordinate}.csv'
@@ -56,7 +56,70 @@ def fetch_data_from_s3(s3_client, bucket, dataset_type, aoi_type, coordinate, va
         elif aoi_type == 'polygon':
             if coordinate is not None:
                 s3_key = f'csiem-data/data-lake/ESA/GlobColor/Reflectance/Polygon/CMEMS_reflectance_polygon_{coordinate}.csv'
-                title = f'{variable} Timeseries for Polygon {coordinate}'    
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "transp":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/ESA/GlobColor/Transp/Point/CMEMS_transp_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/ESA/GlobColor/Transp/Polygon/CMEMS_transp_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "optics":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/ESA/GlobColor/Optics/Point/CMEMS_optics_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/ESA/GlobColor/Optics/Polygon/CMEMS_optics_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "pp":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/ESA/GlobColor/PP/Point/CMEMS_PP_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/ESA/GlobColor/PP/Polygon/CMEMS_PP_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "ostia":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/UKMO/OSTIA/Temperature/Points/CMEMS_SST_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/UKMO/OSTIA/Temperature/Polygon/CMEMS_SST_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "poc":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/NASA/MODIS/POC/Points/MODIS_POC_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/NASA/MODIS/POC/Polygon/MODIS_POC_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "pic":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/NASA/MODIS/PIC/Points/MODIS_PIC_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/NASA/MODIS/PIC/Polygon/MODIS_PIC_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "par":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/NASA/MODIS/PAR/Points/MODIS_PAR_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/NASA/MODIS/PAR/Polygon/MODIS_PAR_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
 
     if s3_key is None or title is None:
         return None, None

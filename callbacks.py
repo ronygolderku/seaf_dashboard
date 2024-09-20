@@ -8,7 +8,7 @@ from dash import Input, Output, State
 from pages.home import home_layout
 import dash_leaflet as dl
 #ghrsst_mur_layout, reflectance_layout, plankton_layout
-from pages.data_viz import olci_layout, ghrsst_mur_layout, plankton_layout, reflectance_layout, create_points_layer, points_df, geojson_data
+from pages.data_viz import olci_layout, ghrsst_mur_layout, plankton_layout, reflectance_layout, create_points_layer, points_df, geojson_data, transp_layout, optics_layout, pp_layout, ostia_layout, poc_layout, par_layout, pic_layout
 from s3_fetch import s3_client, fetch_data_from_s3
 
 polygon_key_mapping = {str(i): f"Polygons_{i}_MultiPolygon.shp" for i in range(1, 7)}  # Ensure ".shp" extension
@@ -75,6 +75,36 @@ def register_callbacks(app):
             return not is_open
         return is_open
 
+    @app.callback(
+        Output("pisces-collapse", "is_open"),
+        [Input("pisces-link", "n_clicks")],
+        [State("pisces-collapse", "is_open")]
+    )
+    def toggle_pisces_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+
+    @app.callback(
+        Output("seapodym-collapse", "is_open"),
+        [Input("seapodym-link", "n_clicks")],
+        [State("seapodym-collapse", "is_open")]
+    )
+    def toggle_seapodym_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+
+    @app.callback(
+        Output("nemo-collapse", "is_open"),
+        [Input("nemo-link", "n_clicks")],
+        [State("nemo-collapse", "is_open")]
+    )
+    def toggle_nemo_collapse(n, is_open):
+        if n:
+            return not is_open
+        return is_open
+
 
     # Page routing
     @app.callback(
@@ -90,6 +120,20 @@ def register_callbacks(app):
             return reflectance_layout()
         elif pathname == "/esa/globcolor/plankton":
             return plankton_layout()
+        elif pathname == "/esa/globcolor/transp":
+            return transp_layout()
+        elif pathname == "/esa/globcolor/optics":
+            return optics_layout()
+        elif pathname == "/esa/globcolor/pp":
+            return pp_layout()
+        elif pathname == "/ukmo/ostia":
+            return ostia_layout()
+        elif pathname == "/nasa/modis/poc":
+            return poc_layout()
+        elif pathname == "/nasa/modis/par":
+            return par_layout()
+        elif pathname == "/nasa/modis/pic":
+            return pic_layout()
         return home_layout()
     
     @app.callback(

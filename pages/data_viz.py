@@ -4,7 +4,7 @@ import pandas as pd
 import os
 import dash_leaflet as dl
 from dash import dcc, html
-from data_info import olci, ghrsst, plankton, reflectance
+from data_info import olci, mur, plankton, reflectance, transp, optics, pp, ostia, par, pic, poc
 
 # Load shapefiles and CSV
 points_df = pd.read_csv("C:/Users/admin/Downloads/WAMSI/points.csv")
@@ -42,7 +42,7 @@ def create_points_layer(selected_point=None):
 # Create a generic layout function
 def create_layout(title, map_id, variable_options, dataset_type, geojson_data, point_range, dataset_info):
     return html.Div([
-        html.H2(title, className="heading"),
+        html.H2(f'{title} Data Visualization', className="heading"),
         html.Hr(),
 
         # Create a two-column layout
@@ -87,7 +87,7 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
             # Right side: content (variable selector, AOI selector, date picker, plot button)
             html.Div([
                 dcc.Tabs([
-                    dcc.Tab(label=f'{title} Data', children=[
+                    dcc.Tab(label=title, children=[
                         html.Div([
                             html.Div([
                                 html.Div([
@@ -169,8 +169,8 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                     ]),
                     dcc.Tab(label='About', children=[
                         html.Div([
-                            html.H3('Dataset Information'),
-                            html.P(dataset_info),
+                            # html.H3('Dataset Information'),
+                            dataset_info
                         ], style={'padding': '20px'})
                     ])
                 ], className="tabs-container"),
@@ -185,7 +185,14 @@ def olci_layout():
 
 def ghrsst_mur_layout():
     variable_options = [{'label': 'Sea Surface Temperature [°C]', 'value': 'analysed_sst'}]
-    return create_layout("GHRSST MUR", "ghrsst-map", variable_options, "ghrsst", geojson_data, 33, ghrsst)
+    return create_layout("GHRSST MUR", "mur-map", variable_options, "mur", geojson_data, 33, mur)
+
+def transp_layout():
+    variable_options = [{'label': 'diffuse attenuation coefficient at 490 nm [m-¹]', 'value': 'KD490'},
+                        {'label': 'Secchi disk depth [m]', 'value': 'ZSD'},
+                        {'label': 'Suspended particulate matter [g/m³]', 'value': 'SPM'}
+                        ]
+    return create_layout("Globecolor Transparency", "transp-map", variable_options, "transp", geojson_data, 14, transp)
 
 def plankton_layout():
     variable_options = [
@@ -211,3 +218,40 @@ def reflectance_layout():
         {'label': 'RS reflectance at 670nm [sr⁻¹]', 'value': 'RRS670'},
     ]
     return create_layout("Globecolor reflectance", "reflectance-map", variable_options, "reflectance", geojson_data, 14, reflectance)
+
+def optics_layout():
+    variable_options = [
+        {'label': 'Backscattering coefficient [m⁻¹]', 'value': 'BBP'},
+        {'label': 'Colored Dissolved Organic Matter [m⁻¹]', 'value': 'CDM'}
+    ]
+    return create_layout("Globecolor optics", "optics-map", variable_options, "optics", geojson_data, 14, optics)
+
+def pp_layout():
+    variable_options = [
+        {'label': 'Primary Production [mg C m⁻² day⁻¹]', 'value': 'PP'}
+    ]
+    return create_layout("Globecolor PP", "pp-map", variable_options, "pp", geojson_data, 14, pp)
+
+def ostia_layout():
+    variable_options = [
+        {'label': 'Sea Surface Temperature [°K]', 'value': 'analysed_sst'}
+    ]
+    return create_layout("UKMO OSTIA", "ostia-map", variable_options, "ostia", geojson_data, 14, ostia)
+
+def pic_layout():
+    variable_options = [
+        {'label': 'Particulate Inorganic Carbon [mg m⁻³]', 'value': 'pic'}
+    ]
+    return create_layout("NASA MODIS PIC", "pic-map", variable_options, "pic", geojson_data, 14, pic)
+
+def poc_layout():
+    variable_options = [
+        {'label': 'Particulate Organic Carbon [mg m⁻³]', 'value': 'poc'}
+    ]
+    return create_layout("NASA MODIS POC", "poc-map", variable_options, "poc", geojson_data, 14, poc)
+
+def par_layout():
+    variable_options = [
+        {'label': 'Photosynthetically Available Radiation [Einstein m⁻² d⁻¹]', 'value': 'par'}
+    ]
+    return create_layout("NASA MODIS PAR", "par-map", variable_options, "par", geojson_data, 14, par)

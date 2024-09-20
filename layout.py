@@ -106,9 +106,40 @@ sidebar = html.Div(
                             dbc.Collapse(
                                 dbc.Nav(
                                     [
-                                        dbc.NavLink("PISCES", href="/moi/model/pisces", style={'fontSize': '14px'}),
-                                        dbc.NavLink("SEAPODYM", href="/moi/model/seapodym", style={'fontSize': '14px'}),
-                                        dbc.NavLink("NEMO", href="/moi/model/nemo", style={'fontSize': '14px'}),
+                                        dbc.NavLink("PISCES", href="#", id="pisces-link", style={'fontSize': '14px'}),
+                                        dbc.Collapse(
+                                            dbc.Nav(
+                                                [
+                                                    dbc.NavLink("Bio", href="/moi/model/pisces/bio", style={'fontSize': '14px'}),
+                                                    dbc.NavLink("Nut", href="/moi/model/pisces/nut", style={'fontSize': '14px'}),
+                                                    dbc.NavLink("optics", href="/moi/model/pisces/optics", style={'fontSize': '14px'}),
+                                                    dbc.NavLink("Car", href="/moi/model/pisces/car", style={'fontSize': '14px'}),
+                                                    dbc.NavLink("PFTs", href="/moi/model/pisces/pfts", style={'fontSize': '14px'})
+                                                ], vertical=True
+                                            ),
+                                            id="pisces-collapse",
+                                            is_open=True,
+                                        ),
+                                        dbc.NavLink("SEAPODYM", href="#", id="seapodym-link", style={'fontSize': '14px'}),
+                                        dbc.Collapse(
+                                            dbc.Nav(
+                                                [
+                                                    dbc.NavLink("Biomass", href="/moi/model/seapodym/biomass", style={'fontSize': '14px'})
+                                                ], vertical=True
+                                            ),
+                                            id="seapodym-collapse",
+                                            is_open=True,
+                                        ),
+
+                                        dbc.NavLink("NEMO", href="#", id="nemo-link", style={'fontSize': '14px'}),
+                                        dbc.Collapse(
+                                            dbc.Nav([
+                                                    dbc.NavLink("Salinity", href="/moi/model/nemo/salinity", style={'fontSize': '14px'})
+                                                  ], vertical=True
+                                            ),
+                                            id="nemo-collapse",
+                                            is_open=True,
+                                        ),
                                     ], vertical=True
                                 ),
                                 id="model-collapse",
