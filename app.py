@@ -4,7 +4,7 @@ from layout import layout
 from callbacks import register_callbacks
 
 # Initialize the Dash app
-app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP,"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"])
 
 # Set the layout
 app.layout = layout

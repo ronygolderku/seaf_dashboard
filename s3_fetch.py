@@ -120,7 +120,80 @@ def fetch_data_from_s3(s3_client, bucket, dataset_type, aoi_type, coordinate, va
             if coordinate is not None:
                 s3_key = f'csiem-data/data-lake/NASA/MODIS/PAR/Polygon/MODIS_PAR_polygon_{coordinate}.csv'
                 title = f'{variable} Timeseries for Polygon {coordinate}'
-
+    ## update the code for here
+    elif dataset_type == "mod_bio":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_bio/Points/CMEMS_bio_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_bio/Polygon/CMEMS_bio_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "mod_nut":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_Nut/Points/CMEMS_nut_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_Nut/Polygon/CMEMS_nut_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "mod_optics":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_optics/Points/CMEMS_optics_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_optics/Polygon/CMEMS_optics_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "mod_car":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_car/Points/CMEMS_car_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_car/Polygon/CMEMS_car_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "mod_co2":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_co2/Points/CMEMS_co2_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_co2/Polygon/CMEMS_co2_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}' 
+    elif dataset_type == "mod_pfts":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'/csiem-data/data-lake/MOI/PISCES/Model_pft/Points/CMEMS_pft_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_pft/Polygon/CMEMS_pft_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "mod_biomass":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/SEAPODYM/Model_PP_ZO/Points/CMEMS_npp_zooc_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/SEAPODYM/Model_PP_ZO/Polygon/CMEMS_npp_zooc_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    elif dataset_type == "mod_sal":
+        if aoi_type == 'point':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/NEMO/Model_salinity/Points/CMEMS_Salt_point_{coordinate}.csv'
+                title = f'{variable} Timeseries for Point {coordinate}'
+        elif aoi_type == 'polygon':
+            if coordinate is not None:
+                s3_key = f'csiem-data/data-lake/MOI/NEMO/Model_salinity/Polygon/CMEMS_Salt_polygon_{coordinate}.csv'
+                title = f'{variable} Timeseries for Polygon {coordinate}'
+    
     if s3_key is None or title is None:
         return None, None
 

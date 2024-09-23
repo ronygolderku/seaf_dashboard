@@ -12,6 +12,33 @@ from pages.data_viz import olci_layout, ghrsst_mur_layout, plankton_layout, refl
 from s3_fetch import s3_client, fetch_data_from_s3
 
 polygon_key_mapping = {str(i): f"Polygons_{i}_MultiPolygon.shp" for i in range(1, 7)}  # Ensure ".shp" extension
+variable_info = {
+    'CHL': {'label': 'Chlorophyll-a [mg/m³]', 'value': 'CHL'},
+    'analysed_sst': {'label': 'Sea Surface Temperature [°C]', 'value': 'analysed_sst'},
+    'KD490': {'label': 'diffuse attenuation coefficient at 490 nm [m-¹]', 'value': 'KD490'},
+    'ZSD': {'label': 'Secchi disk depth [m]', 'value': 'ZSD'},
+    'SPM': {'label': 'Suspended particulate matter [g/m³]', 'value': 'SPM'},
+    'DIATO': {'label': 'Diatoms [mg m⁻³]', 'value': 'DIATO'},
+    'DINO': {'label': 'Dinoflagellates [mg m⁻³]', 'value': 'DINO'},
+    'GREEN': {'label': 'Green Algae [mg m⁻³]', 'value': 'GREEN'},
+    'HAPTO': {'label': 'Haptophytes [mg m⁻³]', 'value': 'HAPTO'},
+    'MICRO': {'label': 'Microplankton [mg m⁻³]', 'value': 'MICRO'},
+    'NANO': {'label': 'Nanoplankton [mg m⁻³]', 'value': 'NANO'},
+    'PICO': {'label': 'Picoplankton [mg m⁻³]', 'value': 'PICO'},
+    'PROCHLO': {'label': 'Prochlorococcus [mg m⁻³]', 'value': 'PROCHLO'},
+    'PROKAR': {'label': 'Prokaryotes [mg m⁻³]', 'value': 'PROKAR'},
+    'RRS412': {'label': 'RS reflectance at 412nm [sr⁻¹]', 'value': 'RRS412'},
+    'RRS443': {'label': 'RS reflectance at 443nm [sr⁻¹]', 'value': 'RRS443'},
+    'RRS490': {'label': 'RS reflectance at 490nm [sr⁻¹]', 'value': 'RRS490'},
+    'RRS510': {'label': 'RS reflectance at 555nm [sr⁻¹]', 'value': 'RRS510'},
+    'RRS670': {'label': 'RS reflectance at 670nm [sr⁻¹]', 'value': 'RRS670'},
+    'BBP': {'label': 'Backscattering coefficient [m⁻¹]', 'value': 'BBP'},
+    'CDM': {'label': 'Colored Dissolved Organic Matter [m⁻¹]', 'value': 'CDM'},
+    'PP': {'label': 'Primary Production [mg C m⁻² day⁻¹]', 'value': 'PP'},
+    'pic': {'label': 'Particulate Inorganic Carbon [mg m⁻³]', 'value': 'pic'},
+    'poc': {'label': 'Particulate Organic Carbon [mg m⁻³]', 'value': 'poc'},
+    'par': {'label': 'Photosynthetically Available Radiation [Einstein m⁻² d⁻¹]', 'value': 'par'}
+}
 
 
 def register_callbacks(app):
@@ -175,7 +202,6 @@ def register_callbacks(app):
         end_date = df['time'].max()
 
         return start_date, end_date
-
     @app.callback(
         Output("output-plot", "figure"),
         [Input("plot-button", "n_clicks")],
@@ -187,6 +213,7 @@ def register_callbacks(app):
         State("aoi-selector", "value"),
         State("dataset-type", "value")]
     )
+
     def update_plot(n_clicks, point_coordinate, polygon_coordinate, variable, start_date, end_date, aoi_type, dataset_type):
         if n_clicks is None:
             return {}
@@ -210,8 +237,13 @@ def register_callbacks(app):
         if start_date and end_date:
             df = df[(df['time'] >= start_date) & (df['time'] <= end_date)]
 
+            # Retrieve the label and value for the variable
+        variable_info_entry = variable_info.get(variable, {})
+        variable_label = variable_info_entry.get('label', variable.capitalize())
+        variable_value = variable_info_entry.get('value', variable)
+
         # Create the line chart
-        fig = px.line(df, x='time', y=variable, title=title)
+        fig = px.line(df, x='time', y=variable_value, title=title)
 
         # Update the layout to set the font
         fig.update_layout(
@@ -220,8 +252,24 @@ def register_callbacks(app):
                 size=18,  # You can adjust the size as needed
                 color="Black"  # You can adjust the color as needed
             ),
-            template="simple_white"  # Change the template as needed
-        )
+            title=dict(
+                font=dict(size=24, color="#2c3e50"),  # Customize title font and color
+                x=0.5,  # Center the title
+                xanchor='center',
+                yanchor='top'
+            ),
+            xaxis_title="Date",  # Customize X-axis label
+            yaxis_title=variable_label,  # Capitalize variable name for Y-axis label
+            xaxis=dict(showgrid=False),  # Hide gridlines for cleaner look
+            yaxis=dict(showgrid=True, gridcolor='#dddddd'),  # Lighter gridlines for Y-axis
+            template="plotly_white",  # Apply a cleaner, modern template
+            plot_bgcolor='#fafafa',  # Light background color
+            hovermode="x unified",  # Unified hover tooltip for a cleaner display
+            margin=dict(l=50, r=50, t=50, b=50)  # Adjust margins for better spacing
+            )
+
+        # Add hover text format (optional, for extra info on hover)
+        fig.update_traces(hovertemplate='%{x}: %{y:.2f}')
 
         return fig
     

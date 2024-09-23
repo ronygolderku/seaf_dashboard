@@ -39,8 +39,29 @@ def create_points_layer(selected_point=None):
     return points_layer
 
 
+chl_layer = dl.TileLayer(
+    url="https://wmts.marine.copernicus.eu/teroWmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=OCEANCOLOUR_GLO_BGC_L3_MY_009_103/cmems_obs-oc_glo_bgc-plankton_my_l3-olci-4km_P1D_202207/CHL&FORMAT=image/png&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&style=cmap:jet,logScale",
+    opacity=0.7, attribution="Copernicus Marine Service"
+)
+
+sst_layer = dl.WMSTileLayer(
+        url="https://polarwatch.noaa.gov/erddap/wms/jplMURSST41/request",
+        layers="jplMURSST41:analysed_sst",
+        format="image/png",
+        transparent=True,
+        version="1.3.0",
+        crs="EPSG4326",
+        attribution="NOAA PolarWatch"
+)
+ostia_layer = dl.TileLayer(
+    url="https://wmts.marine.copernicus.eu/teroWmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2/analysed_sst&FORMAT=image/png&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&style=cmap:jet", opacity=0.7, attribution="Copernicus Marine Service"
+)
+
+reflectance_layer = dl.TileLayer(
+    url="https://wmts.marine.copernicus.eu/teroWmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=OCEANCOLOUR_GLO_BGC_L3_MY_009_103/cmems_obs-oc_glo_bgc-reflectance_my_l3-multi-4km_P1D_202311/RRS412&FORMAT=image/png&TILEMATRIXSET=EPSG:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&style=cmap:jet", opacity=0.7, attribution="Copernicus Marine Service")
+
 # Create a generic layout function
-def create_layout(title, map_id, variable_options, dataset_type, geojson_data, point_range, dataset_info):
+def create_layout(title, map_id, variable_options, dataset_type, geojson_data, point_range, dataset_info, wmts_layer):
     return html.Div([
         html.H2(f'{title} Data Visualization', className="heading"),
         html.Hr(),
@@ -57,6 +78,9 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                             id="ocean-basemap"
                         ),
                         dl.LayerGroup(id="points-layer"),
+                        dl.ScaleControl(position="bottomleft"),
+                        dl.FullScreenControl(),
+
                         dl.LayerGroup(id="highlighted-layer"),  # For highlighted polygons
                         dl.LayersControl(
                             [
@@ -75,6 +99,10 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                                     dl.LayerGroup(
                                         [dl.GeoJSON(data=geojson_data[name], id=f"geojson-{name}") for name in geojson_data]
                                     ), name="Polygon", checked=False
+                                ),
+                                # Add WMTS Layer
+                                dl.Overlay(
+                                     wmts_layer, name="WMTS Layer", checked=True
                                 ),
                             ], position="topright"
                         )
@@ -181,11 +209,11 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
 # Now use the generic function to create specific layouts
 def olci_layout():
     variable_options = [{'label': 'Chlorophyll-a [mg/m³]', 'value': 'CHL'}]
-    return create_layout("Sentinel OLCI", "olci-map", variable_options, "olci", geojson_data, 33, olci)
+    return create_layout("Sentinel OLCI", "olci-map", variable_options, "olci", geojson_data, 33, olci, chl_layer)
 
 def ghrsst_mur_layout():
     variable_options = [{'label': 'Sea Surface Temperature [°C]', 'value': 'analysed_sst'}]
-    return create_layout("GHRSST MUR", "mur-map", variable_options, "mur", geojson_data, 33, mur)
+    return create_layout("GHRSST MUR", "mur-map", variable_options, "mur", geojson_data, 33, mur, sst_layer)
 
 def transp_layout():
     variable_options = [{'label': 'diffuse attenuation coefficient at 490 nm [m-¹]', 'value': 'KD490'},
@@ -217,7 +245,7 @@ def reflectance_layout():
         {'label': 'RS reflectance at 555nm [sr⁻¹]', 'value': 'RRS510'},
         {'label': 'RS reflectance at 670nm [sr⁻¹]', 'value': 'RRS670'},
     ]
-    return create_layout("Globecolor reflectance", "reflectance-map", variable_options, "reflectance", geojson_data, 14, reflectance)
+    return create_layout("Globecolor reflectance", "reflectance-map", variable_options, "reflectance", geojson_data, 14, reflectance, reflectance_layer)
 
 def optics_layout():
     variable_options = [
@@ -236,7 +264,7 @@ def ostia_layout():
     variable_options = [
         {'label': 'Sea Surface Temperature [°K]', 'value': 'analysed_sst'}
     ]
-    return create_layout("UKMO OSTIA", "ostia-map", variable_options, "ostia", geojson_data, 14, ostia)
+    return create_layout("UKMO OSTIA", "ostia-map", variable_options, "ostia", geojson_data, 14, ostia, ostia_layer)
 
 def pic_layout():
     variable_options = [
