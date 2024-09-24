@@ -169,7 +169,7 @@ def fetch_data_from_s3(s3_client, bucket, dataset_type, aoi_type, coordinate, va
     elif dataset_type == "mod_pfts":
         if aoi_type == 'point':
             if coordinate is not None:
-                s3_key = f'/csiem-data/data-lake/MOI/PISCES/Model_pft/Points/CMEMS_pft_point_{coordinate}.csv'
+                s3_key = f'csiem-data/data-lake/MOI/PISCES/Model_pft/Points/CMEMS_pft_point_{coordinate}.csv'
                 title = f'{variable} Timeseries for Point {coordinate}'
         elif aoi_type == 'polygon':
             if coordinate is not None:

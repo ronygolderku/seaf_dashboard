@@ -8,7 +8,7 @@ from dash import Input, Output, State
 from pages.home import home_layout
 import dash_leaflet as dl
 #ghrsst_mur_layout, reflectance_layout, plankton_layout
-from pages.data_viz import olci_layout, ghrsst_mur_layout, plankton_layout, reflectance_layout, create_points_layer, points_df, geojson_data, transp_layout, optics_layout, pp_layout, ostia_layout, poc_layout, par_layout, pic_layout
+from pages.data_viz import olci_layout, ghrsst_mur_layout, plankton_layout, reflectance_layout, create_points_layer, points_df, geojson_data, transp_layout, optics_layout, pp_layout, ostia_layout, poc_layout, par_layout, pic_layout, mod_bio_layout, mod_nut_layout, mod_car_layout, mod_biomass_layout, mod_co2_layout, mod_optics_layout, mod_pfts_layout, mod_sal_layout
 from s3_fetch import s3_client, fetch_data_from_s3
 
 polygon_key_mapping = {str(i): f"Polygons_{i}_MultiPolygon.shp" for i in range(1, 7)}  # Ensure ".shp" extension
@@ -30,14 +30,29 @@ variable_info = {
     'RRS412': {'label': 'RS reflectance at 412nm [sr⁻¹]', 'value': 'RRS412'},
     'RRS443': {'label': 'RS reflectance at 443nm [sr⁻¹]', 'value': 'RRS443'},
     'RRS490': {'label': 'RS reflectance at 490nm [sr⁻¹]', 'value': 'RRS490'},
-    'RRS510': {'label': 'RS reflectance at 555nm [sr⁻¹]', 'value': 'RRS510'},
+    'RRS555': {'label': 'RS reflectance at 555nm [sr⁻¹]', 'value': 'RRS555'},
     'RRS670': {'label': 'RS reflectance at 670nm [sr⁻¹]', 'value': 'RRS670'},
     'BBP': {'label': 'Backscattering coefficient [m⁻¹]', 'value': 'BBP'},
     'CDM': {'label': 'Colored Dissolved Organic Matter [m⁻¹]', 'value': 'CDM'},
     'PP': {'label': 'Primary Production [mg C m⁻² day⁻¹]', 'value': 'PP'},
     'pic': {'label': 'Particulate Inorganic Carbon [mg m⁻³]', 'value': 'pic'},
     'poc': {'label': 'Particulate Organic Carbon [mg m⁻³]', 'value': 'poc'},
-    'par': {'label': 'Photosynthetically Available Radiation [Einstein m⁻² d⁻¹]', 'value': 'par'}
+    'par': {'label': 'Photosynthetically Available Radiation [Einstein m⁻² d⁻¹]', 'value': 'par'},
+    'nppv': {'label': 'Net Primary Production [mg C m⁻² day⁻¹]', 'value': 'nppv'},
+    'o2': {'label': 'Dissolved Oxygen [mmol m⁻³]', 'value': 'o2'},
+    'fe': {'label': 'Dissolved Iron [mmol m⁻³]', 'value': 'fe'},
+    'si': {'label': 'Dissolved Silicate [mmol m⁻³]', 'value': 'si'},
+    'no3': {'label': 'Nitrate [mmol m⁻³]', 'value': 'no3'},
+    'po4': {'label': 'Phosphate [mmol m⁻³]', 'value': 'po4'},
+    'kd': {'label': 'Volume attenuation coefficient [m⁻¹]', 'value': 'kd'},
+    'talk': {'label': 'Total Alkalinity [mol m⁻³]', 'value': 'talk'},
+    'dissic': {'label': 'Dissolved Inorganic Carbon [mol m⁻³]', 'value': 'dissic'},
+    'spco2': {'label': 'Sea Surface pCO2 [Pa]', 'value': 'spco2'},
+    'chl': {'label': 'Chlorophyll-a [mg m⁻³]', 'value': 'chl'},
+    'phyc': {'label': 'Phytoplankton [mmol m⁻³]', 'value': 'phyc'},
+    'zooc': {'label': 'Zooplankton [g m⁻³]', 'value': 'zooc'},
+    'npp': {'label': 'Net Primary Production [mg C m⁻² day⁻¹]', 'value': 'npp'},
+    'so': {'label': 'Salinity [PSU]', 'value': 'so'},
 }
 
 
@@ -161,6 +176,22 @@ def register_callbacks(app):
             return par_layout()
         elif pathname == "/nasa/modis/pic":
             return pic_layout()
+        elif pathname == "/moi/model/pisces/bio":
+            return mod_bio_layout()
+        elif pathname == "/moi/model/pisces/nut":
+            return mod_nut_layout()
+        elif pathname == "/moi/model/pisces/car":
+            return mod_car_layout()
+        elif pathname == "/moi/model/seapodym/biomass":
+            return mod_biomass_layout()
+        elif pathname == "/moi/model/pisces/co2":
+            return mod_co2_layout()
+        elif pathname == "/moi/model/pisces/optics":
+            return mod_optics_layout()
+        elif pathname == "/moi/model/pisces/pfts":
+            return mod_pfts_layout()
+        elif pathname == "/moi/model/nemo/salinity":
+            return mod_sal_layout()      
         return home_layout()
     
     @app.callback(
@@ -258,7 +289,7 @@ def register_callbacks(app):
                 xanchor='center',
                 yanchor='top'
             ),
-            xaxis_title="Date",  # Customize X-axis label
+            xaxis_title="Time",  # Customize X-axis label
             yaxis_title=variable_label,  # Capitalize variable name for Y-axis label
             xaxis=dict(showgrid=False),  # Hide gridlines for cleaner look
             yaxis=dict(showgrid=True, gridcolor='#dddddd'),  # Lighter gridlines for Y-axis

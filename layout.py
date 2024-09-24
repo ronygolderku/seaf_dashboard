@@ -98,6 +98,7 @@ sidebar = html.Div(
                                                     dbc.NavLink([html.I(className="fas fa-apple-alt"), " Nut"], href="/moi/model/pisces/nut", style={'fontSize': '14px', 'paddingLeft': '40px'}),
                                                     dbc.NavLink([html.I(className="fas fa-eye"), " Optics"], href="/moi/model/pisces/optics", style={'fontSize': '14px', 'paddingLeft': '40px'}),
                                                     dbc.NavLink([html.I(className="fas fa-leaf"), " Car"], href="/moi/model/pisces/car", style={'fontSize': '14px', 'paddingLeft': '40px'}),
+                                                    dbc.NavLink([html.I(className="fas fa-cube"), " CO₂"], href="/moi/model/pisces/co2", style={'fontSize': '14px', 'paddingLeft': '40px'}),
                                                     dbc.NavLink([html.I(className="fas fa-seedling"), " PFTs"], href="/moi/model/pisces/pfts", style={'fontSize': '14px', 'paddingLeft': '40px'})
                                                 ], vertical=True
                                             ),
