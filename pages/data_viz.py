@@ -1,4 +1,5 @@
 from dash import dcc, html, Input, Output, State, callback
+import dash_bootstrap_components as dbc
 import geopandas as gpd
 import pandas as pd
 import os
@@ -90,96 +91,105 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
 
             # Right side: content (variable selector, AOI selector, date picker, plot button)
             html.Div([
-                dcc.Tabs([
-                    dcc.Tab(label=title, children=[
-                        html.Div([
+                dbc.Tabs([
+                    dbc.Tab(
+                        label=title,
+                        tab_id="tab-1",
+                        children=[
                             html.Div([
                                 html.Div([
-                                    html.Label("Select Variable"),
-                                    dcc.Dropdown(
-                                        id="variable-selector",
-                                        options=variable_options,
-                                        className="input-dropdown"  # Add a specific class
-                                    )
-                                ], className="input-group"),
-
-                                html.Div([
-                                    html.Label("Select AOI Type"),
-                                    dcc.Dropdown(
-                                        id="aoi-selector",
-                                        options=[
-                                            {'label': 'Point', 'value': 'point'},
-                                            {'label': 'Polygon', 'value': 'polygon'}
-                                        ],
-                                        className="input-dropdown"
-                                    )
-                                ], className="input-group"),
-
-                                # Conditional Point/Polygon Selector
-                                html.Div([
                                     html.Div([
-                                        html.Label("Select Point"),
+                                        html.Label("Select Variable"),
                                         dcc.Dropdown(
-                                            id="coordinate-input-point",
-                                            options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, point_range + 1)],
-                                            className="input-dropdown"
+                                            id="variable-selector",
+                                            options=variable_options,
+                                            className="input-dropdown",
+                                             style={'width': '300px'}
                                         )
-                                    ], id='point-selector', style={'display': 'none'}),
-
+                                    ], className="input-group", style={'flex': '1'}),
+            
                                     html.Div([
-                                        html.Label("Select Polygon"),
+                                        html.Label("Select AOI Type"),
                                         dcc.Dropdown(
-                                            id="coordinate-input-polygon",
-                                            options=[{'label': f'Polygon {i}', 'value': str(i)} for i in range(1, 7)],
-                                            className="input-dropdown"
+                                            id="aoi-selector",
+                                            options=[
+                                                {'label': 'Point', 'value': 'point'},
+                                                {'label': 'Polygon', 'value': 'polygon'}
+                                            ],
+                                            className="input-dropdown", style={'width': '270px'}
                                         )
-                                    ], id='polygon-selector', style={'display': 'none'})
-                                ], className="input-group"),
-
-                                # Date Range Pickers
-                                html.Div([
+                                    ], className="input-group", style={'flex': '1'}),
+            
+                                    # Conditional Point/Polygon Selector
                                     html.Div([
-                                        html.Label("From"),
-                                        dcc.DatePickerSingle(
-                                            id="start-date-picker",
-                                            placeholder="Start Date",
-                                            className="DatePickerSingle"
-                                        )
-                                    ], className="input-group"),
-
+                                        html.Div([
+                                            html.Label("Select Point"),
+                                            dcc.Dropdown(
+                                                id="coordinate-input-point",
+                                                options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, point_range + 1)],
+                                                className="input-dropdown"
+                                            )
+                                        ], id='point-selector', style={'display': 'none'}),
+            
+                                        html.Div([
+                                            html.Label("Select Polygon"),
+                                            dcc.Dropdown(
+                                                id="coordinate-input-polygon",
+                                                options=[{'label': f'Polygon {i}', 'value': str(i)} for i in range(1, 7)],
+                                                className="input-dropdown"
+                                            )
+                                        ], id='polygon-selector', style={'display': 'none'})
+                                    ], className="input-group", style={'flex': '1'}),
+            
+                                    # Date Range Pickers
                                     html.Div([
-                                        html.Label("To"),
-                                        dcc.DatePickerSingle(
-                                            id="end-date-picker",
-                                            placeholder="End Date",
-                                            className="DatePickerSingle"
-                                        )
-                                    ], className="input-group"),
-                                ], className="input-date-range"),
-
-                                # Hidden Input for Dataset Type
-                                dcc.Input(id="dataset-type", type="hidden", value=dataset_type),
-
-                                # Plot Button
-                                html.Button('Plot', id='plot-button', className="plot-btn"),
-
-                                # Graph Output
-                                dcc.Graph(id='output-plot', className="graph-output"),
-                            ], className="controls-container")
-                        ]),
-
-                        # Hidden div to store map update trigger
-                        dcc.Store(id="highlight-data")
-                    ]),
-                    dcc.Tab(label='About', children=[
-                        html.Div([
-                            dataset_info
-                        ], style={'padding': '20px'})
-                    ])
-                ], className="tabs-container"),
+                                        html.Div([
+                                            html.Label("From"),
+                                            dcc.DatePickerSingle(
+                                                id="start-date-picker",
+                                                placeholder="Start Date",
+                                                className="DatePickerSingle"
+                                            )
+                                        ], className="input-group"),
+            
+                                        html.Div([
+                                            html.Label("To"),
+                                            dcc.DatePickerSingle(
+                                                id="end-date-picker",
+                                                placeholder="End Date",
+                                                className="DatePickerSingle"
+                                            )
+                                        ], className="input-group"),
+                                    ], className="input-date-range"),
+            
+                                    # Hidden Input for Dataset Type
+                                    dcc.Input(id="dataset-type", type="hidden", value=dataset_type),
+            
+                                    # Plot Button
+                                    html.Button('Plot', id='plot-button', className="plot-btn"),
+            
+                                    # Graph Output
+                                    dcc.Graph(id='output-plot', className="graph-output"),
+                                ], className="controls-container")
+                            ]),
+            
+                            # Hidden div to store map update trigger
+                            dcc.Store(id="highlight-data")
+                        ],
+                    ),
+                    dbc.Tab(
+                        label='About',
+                        tab_id="tab-2",
+                        children=[
+                            html.Div([
+                                dataset_info
+                            ], style={'padding': '20px'})
+                        ],
+                    )
+                ], id="tabs", active_tab="tab-1", className="tabs-container"),
             ], className='right-panel')  # CSS class for content responsiveness
-        ], className='main-content')  # Flex container for main content
-    ], className='layout-wrapper')
+            ], className='main-content')  # Flex container for main content
+            ], className='layout-wrapper')
 
 
 # Now use the generic function to create specific layouts

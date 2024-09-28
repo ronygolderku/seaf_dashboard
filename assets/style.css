@@ -30,6 +30,21 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Style the tab */
+.tabs-container .nav-link {
+    height: 50px; /* Increase the height */
+    font-weight: bold; /* Make the font bold */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Optional: Adjust padding for better alignment */
+  .tabs-container .nav-link {
+    padding: 0 20px; /* Adjust padding as needed */
+  }
+  
+
 /* Full container */
 .layout-wrapper {
     width: 100%;
