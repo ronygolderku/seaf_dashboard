@@ -19,7 +19,7 @@ sidebar = html.Div(
                         [
                             html.H2("European Space Agency (ESA)", className="display-0", style={'fontSize': '18px'}),
                             dbc.Button(
-                                [html.I(className="fas fa-globe"), " Globcolor"], id="globcolor-button", className="mb-2", n_clicks=0,
+                                [html.I(className="fas fa-globe"), " GlobColour"], id="globcolor-button", className="mb-2", n_clicks=0,
                                 style={'fontSize': '16px', 'marginBottom': '10px'}
                             ),
                             dbc.Collapse(
@@ -42,7 +42,7 @@ sidebar = html.Div(
                             dbc.Collapse(
                                 dbc.Nav(
                                     [
-                                        dbc.NavLink([html.I(className="fas fa-camera"), " OLCI"], href="/esa/sentinel/olci", style={'fontSize': '14px', 'paddingLeft': '20px'}),
+                                        dbc.NavLink([html.I(className="fas fa-leaf"), " Chl-a"], href="/esa/sentinel/olci", style={'fontSize': '14px', 'paddingLeft': '20px'}),
                                     ], vertical=True
                                 ),
                                 id="sentinel-collapse",
@@ -50,7 +50,7 @@ sidebar = html.Div(
                             ),
                             html.Hr(),
                             html.H2("UK Met Office (UKMO)", className="display-6", style={'fontSize': '18px'}),
-                            dbc.NavLink([html.I(className="fas fa-cloud"), " OSTIA"], href="/ukmo/ostia", style={'fontSize': '14px'}),
+                            dbc.NavLink([html.I(className="fas fa-cloud"), " SST"], href="/ukmo/ostia", style={'fontSize': '14px'}),
                             html.Hr(),
                             html.H2("NASA", className="display-6", style={'fontSize': '18px'}),
                             dbc.Button(
@@ -60,7 +60,7 @@ sidebar = html.Div(
                             dbc.Collapse(
                                 dbc.Nav(
                                     [
-                                        dbc.NavLink([html.I(className="fas fa-map"), " MUR"], href="/nasa/ghrsst/mur", style={'fontSize': '14px', 'paddingLeft': '20px'}),
+                                        dbc.NavLink([html.I(className="fas fa-map"), " SST"], href="/nasa/ghrsst/mur", style={'fontSize': '14px', 'paddingLeft': '20px'}),
                                     ], vertical=True
                                 ),
                                 id="ghrsst-collapse",

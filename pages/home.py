@@ -11,15 +11,15 @@ def generate_sunburst_data():
         ["ESA", "Globcolor", "Transp", "KD490, ZSD, SPM"],
         ["ESA", "Globcolor", "Plankton", "CHL, DIATO, DINO, GREEN, HAPTO, MICRO, NANO, PICO, PROCHLO, PROKAR"],
         ["ESA", "Globcolor", "PP", "PP"],
-        ["ESA", "Sentinel", "OLCI", "Chl"],
+        ["ESA", "Sentinel", "OLCI", "Chl-a"],
         ["UKMO", "GHRSST", "OSTIA", "Temp"],
         ["NASA", "MODIS", "MODIS", "POC, PIC, PAR"],
         ["NASA", "GHRSST", "MUR", "SST"],
-        ["MOI", "PISCES", "BIO", "NPPV, O2"],
-        ["MOI", "PISCES", "NUT", "Fe, No3, PO4, Si"],
+        ["MOI", "PISCES", "BIO", "NPPV, O₂"],
+        ["MOI", "PISCES", "NUT", "Fe, NO₃, PO₄, Si"],
         ["MOI", "PISCES", "OPTICS", "KD"],
         ["MOI", "PISCES", "Car", "DIC, PH, Talk"],
-        ["MOI", "PISCES", "CO2", "SPCO2"],
+        ["MOI", "PISCES", "CO₂", "spCO₂"],
         ["MOI", "PISCES", "PFTs", "CHL, Phyto"],
         ["MOI", "SEAPODYM", "Biomass", "PP, ZOO"],
         ["MOI", "NEMO", "SAL", "Salinity"]
@@ -66,7 +66,8 @@ def create_sunburst_chart():
             xanchor='center',
             yanchor='top',
             font=dict(
-                size=24  # Increase the font size
+                size=24,  # Increase the font size
+                family="Times New Roman"  # Set the font to Times New Roman
             )
         )
     )
@@ -89,6 +90,7 @@ def home_layout():
             "padding": "15px",
             "text-align": "center",
             "height": "200px",
+            "opacity": "1",
             "margin-bottom": "20px"
         }),
 
@@ -134,9 +136,32 @@ def home_layout():
 
             # Sunburst chart
             dbc.Row([
-                dbc.Col(dcc.Graph(figure=create_sunburst_chart()), width=12)
+                dbc.Col([
+                    html.Div([
+                        dcc.Graph(figure=create_sunburst_chart()),  # Left column with the figure
+                        html.Div([
+                            html.H4("Agencies", style={"font-weight": "bold"}),  # Heading
+                            html.Ul([  # Unordered list
+                                html.Li([html.Span("ESA: ", style={"font-weight": "bold"}), "European Space Agency"]),
+                                html.Li([html.Span("NASA: ", style={"font-weight": "bold"}), "National Aeronautics and Space Administration"]),
+                                html.Li([html.Span("UKMO: ", style={"font-weight": "bold"}), "United Kingdom Meteorological Office"]),
+                                html.Li([html.Span("MOI: ", style={"font-weight": "bold"}), "Mercator Ocean International"])
+                            ], style={"margin-bottom": "20px"}),  # Add space between lists
+                            html.H4("Program", style={"font-weight": "bold"}),  # Heading
+                            html.Ul([  # Unordered list
+                                html.Li([html.Span("GlobColour: ", style={"font-weight": "bold"}), "Ocean Colour"]),
+                                html.Li([html.Span("GHRSST: ", style={"font-weight": "bold"}), "Group for High Resolution Sea Surface Temperature"]),
+                                html.Li([html.Span("NEMO: ", style={"font-weight": "bold"}), "Nucleus for European Modelling of the Ocean"]),
+                                html.Li([html.Span("PISCES: ", style={"font-weight": "bold"}), "Pelagic Interactions Scheme for Carbon and Ecosystem Studies"]),
+                                html.Li([html.Span("SEAPODYM: ", style={"font-weight": "bold"}), "Spatial Ecosystem and Population Dynamics Model"]),
+                                html.Li([html.Span("MODIS: ", style={"font-weight": "bold"}), "Moderate Resolution Imaging Spectroradiometer"]),
+                                html.Li([html.Span("OLCI: ", style={"font-weight": "bold"}), "Ocean and Land Colour Instrument"]),
+                                html.Li([html.Span("OSTIA: ", style={"font-weight": "bold"}), "Operational Sea Surface Temperature and Sea Ice Analysis"]),
+                            ], style={"margin-bottom": "20px"})  # Add space between lists
+                        ], style={"padding": "10px", "flex": "1"})  # Right column with the full forms
+                    ], style={"background-color": "#f8f9fa", "padding": "20px", "border-radius": "5px", "display": "flex", "gap": "20px"})  # Shared background with flexbox
+                ], width=12)
             ], style={"margin-bottom": "20px"}),
-
             # Footer with contact information
             dbc.Container([
                 html.Hr(),

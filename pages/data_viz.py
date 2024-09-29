@@ -5,10 +5,10 @@ import pandas as pd
 import os
 import dash_leaflet as dl
 from dash import dcc, html
-from data_info import olci, mur, plankton, reflectance, transp, optics, pp, ostia, par, pic, poc
+from data_info import olci, mur, plankton, reflectance, transp, optics, pp, ostia, par, pic, poc, model_bio, model_nut, model_car, model_co2, model_pfts, model_biomass, model_sal, model_optics
 
 # Load shapefiles and CSV
-points_df = pd.read_csv("C:/Users/admin/Downloads/WAMSI/points.csv")
+points_df = pd.read_csv("assets/points.csv")
 shapefiles = [
     "assets/shapefile/Polygons_1_MultiPolygon.shp",
     "assets/shapefile/Polygons_2_MultiPolygon.shp",
@@ -205,7 +205,7 @@ def olci_layout():
     ]
 
     return create_layout(
-        title="Sentinel OLCI",
+        title="Sentinel Chlorophyll-a",
         map_id="olci-map",
         variable_options=variable_options,
         dataset_type="olci",
@@ -238,7 +238,7 @@ def ghrsst_mur_layout():
     ]
 
     return create_layout(
-        title="GHRSST MUR",
+        title="GHRSST SST",
         map_id="mur-map",
         variable_options=variable_options,
         dataset_type="mur",
@@ -271,7 +271,7 @@ def transp_layout():
     ]
 
     return create_layout(
-        title="Globecolor Transparency",
+        title="GlobColour Transparency",
         map_id="transp-map",
         variable_options=variable_options,
         dataset_type="transp",
@@ -311,7 +311,7 @@ def plankton_layout():
     ]
 
     return create_layout(
-        title="Globcolor Plankton",
+        title="GlobColour Plankton",
         map_id="plankton-map",
         variable_options=variable_options,
         dataset_type="plankton",
@@ -346,7 +346,7 @@ def reflectance_layout():
     ]
 
     return create_layout(
-        title="Globecolor Reflectance",
+        title="GlobColour Reflectance",
         map_id="reflectance-map",
         variable_options=variable_options,
         dataset_type="reflectance",
@@ -379,7 +379,7 @@ def optics_layout():
     ]
 
     return create_layout(
-        title="Globcolor Optics",
+        title="GlobColour Optics",
         map_id="optics-map",
         variable_options=variable_options,
         dataset_type="optics",
@@ -410,7 +410,7 @@ def pp_layout():
     ]
 
     return create_layout(
-        title="Globcolor PP",
+        title="GlobColour Primary Productivity",
         map_id="pp-map",
         variable_options=variable_options,
         dataset_type="pp",
@@ -438,7 +438,7 @@ def ostia_layout():
     ]
 
     return create_layout(
-        title="UKMO OSTIA",
+        title="UKMO SST",
         map_id="ostia-map",
         variable_options=variable_options,
         dataset_type="ostia",
@@ -473,7 +473,7 @@ def poc_layout():
     ]
 
     return create_layout(
-        title="NASA MODIS POC",
+        title="MODIS POC",
         map_id="poc-map",
         variable_options=variable_options,
         dataset_type="poc",
@@ -508,7 +508,7 @@ def par_layout():
     ]
 
     return create_layout(
-        title="NASA MODIS PAR",
+        title="MODIS PAR",
         map_id="par-map",
         variable_options=variable_options,
         dataset_type="par",
@@ -541,7 +541,7 @@ def pic_layout():
     ]
 
     return create_layout(
-        title="NASA MODIS PIC",
+        title="MODIS PIC",
         map_id="pic-map",
         variable_options=variable_options,
         dataset_type="pic",
@@ -574,13 +574,13 @@ def mod_bio_layout():
 
 
     return create_layout(
-        title="MOLDEL BIO",
+        title="Model Biogeochemistry",
         map_id="mod-bio-map",
         variable_options=variable_options,
         dataset_type="mod_bio",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,
+        dataset_info=model_bio,
         wmts_layers=wmts_layers,
         layer_name="Model Biogeochemistry")
 
@@ -606,13 +606,13 @@ def mod_nut_layout():
     ]
 
     return create_layout(
-        title="MODEL NUT",
+        title="Model Nutrients",
         map_id="mod-nut-map",
         variable_options=variable_options,
         dataset_type="mod_nut",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,  # Ensure this is the correct dataset info
+        dataset_info=model_nut,  # Ensure this is the correct dataset info
         wmts_layers=wmts_layers,
         layer_name="Model Nutrient Layers"
     )
@@ -638,13 +638,13 @@ def mod_car_layout():
     ]
 
     return create_layout(
-        title="MODEL CAR",
+        title="Model Carbonate",
         map_id="mod-car-map",
         variable_options=variable_options,
         dataset_type="mod_car",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,  # Ensure this is the correct dataset info
+        dataset_info=model_car,  # Ensure this is the correct dataset info
         wmts_layers=wmts_layers,
         layer_name="Model Carbonate Chemistry"
     )
@@ -668,13 +668,13 @@ def mod_co2_layout():
     ]
 
     return create_layout(
-        title="MODEL CO2",
+        title="Model CO₂",
         map_id="mod-co2-map",
         variable_options=variable_options,
         dataset_type="mod_co2",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,  # Ensure this is the correct dataset info
+        dataset_info=model_co2,  # Ensure this is the correct dataset info
         wmts_layers=wmts_layers,
         layer_name="Model CO₂ Layers"
     )
@@ -696,13 +696,13 @@ def mod_optics_layout():
     ]
 
     return create_layout(
-        title="MODEL OPTICS",
+        title="Model Optics",
         map_id="mod-optics-map",
         variable_options=variable_options,
         dataset_type="mod_optics",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,
+        dataset_info=model_optics,
         wmts_layers=wmts_layers,
         layer_name="Model Optics Layers"
     )
@@ -727,13 +727,13 @@ def mod_pfts_layout():
     ]
 
     return create_layout(
-        title="MODEL PFTs",
+        title="Model PFTs",
         map_id="mod-pfts-map",
         variable_options=variable_options,
         dataset_type="mod_pfts",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,
+        dataset_info=model_pfts,
         wmts_layers=wmts_layers,
         layer_name="Model PFTs Layers"
     )
@@ -757,13 +757,13 @@ def mod_sal_layout():
     ]
 
     return create_layout(
-        title="MODEL SAL",
+        title="Model Salinity",
         map_id="mod-sal-map",
         variable_options=variable_options,
         dataset_type="mod_sal",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,
+        dataset_info=model_sal,
         wmts_layers=wmts_layers,
         layer_name="Model Salinity Layers"
     )
@@ -786,13 +786,13 @@ def mod_biomass_layout():
         ) for variable, camp in zip(["zooc", "npp"], ["matter", "algae"])
     ]
     return create_layout(
-        title="MODEL BIOMASS",
+        title="Model Biomass",
         map_id="mod-biomass-map",
         variable_options=variable_options,
         dataset_type="mod_biomass",
         geojson_data=geojson_data,
         point_range=14,
-        dataset_info=pic,
+        dataset_info=model_biomass,
         wmts_layers=wmts_layers,
         layer_name="Model Biomass Layers"
     )
