@@ -23,9 +23,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install system dependencies
-        run: sudo apt-get install -y libgeos-dev
-
       - name: Install Python dependencies
         run: |
           sudo apt-get update
