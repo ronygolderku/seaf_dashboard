@@ -67,7 +67,9 @@ def create_sunburst_chart():
             yanchor='top',
             font=dict(
                 size=24,  # Increase the font size
-                family="Times New Roman"  # Set the font to Times New Roman
+                family="Times New Roman",  # Set the font to Times New Roman
+                weight="bold",
+                color="black"  # Set the font color to black
             )
         )
     )
@@ -100,22 +102,49 @@ def home_layout():
             dbc.Row([
                 dbc.Col(dbc.Card([
                     dbc.CardBody([
-                        html.H4("Total Datasets", className="card-title"),
-                        html.P("17", className="card-text")
+                        html.H4("Agencies", className="card-title", style={"text-align": "center", "font-weight": "bold"}),
+                        html.P("4", className="card-text", style={
+                            "font-size": "2em",
+                            "background-color": "white",
+                            "border-radius": "50%",
+                            "width": "50px",
+                            "height": "50px",
+                            "line-height": "50px",
+                            "text-align": "center",
+                            "margin": "0 auto"
+                        })
                     ])
-                ], style={"background-color": "#f8f9fa", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
+                ], style={"background-color": "#a4c126", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
                 dbc.Col(dbc.Card([
                     dbc.CardBody([
-                        html.H4("Agencies", className="card-title"),
-                        html.P("4", className="card-text")
+                        html.H4("Total Datasets", className="card-title", style={"text-align": "center", "font-weight": "bold"}),
+                        html.P("17", className="card-text", style={
+                            "font-size": "2em",
+                            "background-color": "white",
+                            "border-radius": "50%",
+                            "width": "50px",
+                            "height": "50px",
+                            "line-height": "50px",
+                            "text-align": "center",
+                            "margin": "0 auto"
+                        })
                     ])
-                ], style={"background-color": "#f8f9fa", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
+                ], style={"background-color": "#008bad", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
                 dbc.Col(dbc.Card([
                     dbc.CardBody([
-                        html.H4("Variables", className="card-title"),
-                        html.P("43", className="card-text")
+                        html.H4("Variables", className="card-title", style={"text-align": "center", "font-weight": "bold"}),
+                        html.P("43", className="card-text", style={
+                            "font-size": "2em",
+                            "background-color": "white",
+                            "border-radius": "50%",
+                            "width": "50px",
+                            "height": "50px",
+                            "line-height": "50px",
+                            "text-align": "center",
+                            "margin": "0 auto"
+                        })
                     ])
-                ], style={"background-color": "#f8f9fa", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
+                ], style={"background-color": "#f3bc00", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
             ], className="mb-4"),
         ]),
 
@@ -131,7 +160,7 @@ def home_layout():
                             html.Li([html.Span("UKMO: ", style={"font-weight": "bold"}), "United Kingdom Meteorological Office"]),
                             html.Li([html.Span("MOI: ", style={"font-weight": "bold"}), "Mercator Ocean International"])
                         ], style={"margin-bottom": "20px"}),  # Add space between lists
-                        html.H4("Program", style={"font-weight": "bold"}),  # Heading
+                        html.H4("Programs", style={"font-weight": "bold"}),  # Heading
                         html.Ul([  # Unordered list
                             html.Li([html.Span("GlobColour: ", style={"font-weight": "bold"}), "Ocean Colour"]),
                             html.Li([html.Span("GHRSST: ", style={"font-weight": "bold"}), "Group for High Resolution Sea Surface Temperature"]),
