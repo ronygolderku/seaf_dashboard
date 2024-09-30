@@ -55,6 +55,15 @@ body {
 .heading {
     text-align: center;
     font-weight: bold;
+    margin-top: 0%;
+    background-color:#0056b3;
+    color: white;
+    padding: 15px;
+    margin-bottom: 0%;
+    width: 100%;
+    top: 0%;
+    left: 0%;
+    right: 0%;
 }
 
 /* Main content with left map and right side controls */

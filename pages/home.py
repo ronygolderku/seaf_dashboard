@@ -91,6 +91,7 @@ def home_layout():
             "text-align": "center",
             "height": "200px",
             "opacity": "1",
+            "margin-top": "0px",
             "margin-bottom": "20px"
         }),
 
