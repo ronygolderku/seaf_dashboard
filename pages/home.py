@@ -95,25 +95,8 @@ def home_layout():
             "margin-bottom": "20px"
         }),
 
-        # Main content
+        # Cards for key information
         dbc.Container([
-            # Interactive map with title
-            dbc.Container([
-                dbc.Row([
-                    dbc.Col(html.H4("Dataset Position Map", className="text-center mb-4"), width=12)
-                ]),
-                dbc.Row([
-                    dbc.Col(html.Div([
-                        html.Iframe(
-                            src="https://curtin.maps.arcgis.com/apps/instant/basic/index.html?appid=dd40758d043c4871bc6aedfc6bd178c8",
-                            style={"border": "0", "width": "100%", "height": "600px"},
-                        ),
-                        html.P("iFrames are not supported on this page.", style={"display": "none"})
-                    ]), width=12)
-                ])
-            ], style={"margin-bottom": "20px"}),
-
-            # Cards for key information
             dbc.Row([
                 dbc.Col(dbc.Card([
                     dbc.CardBody([
@@ -134,44 +117,63 @@ def home_layout():
                     ])
                 ], style={"background-color": "#f8f9fa", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
             ], className="mb-4"),
+        ]),
 
-            # Sunburst chart
+        # Sunburst chart and agencies description
+        dbc.Container([
             dbc.Row([
                 dbc.Col([
                     html.Div([
-                        dcc.Graph(figure=create_sunburst_chart()),  # Left column with the figure
-                        html.Div([
-                            html.H4("Agencies", style={"font-weight": "bold"}),  # Heading
-                            html.Ul([  # Unordered list
-                                html.Li([html.Span("ESA: ", style={"font-weight": "bold"}), "European Space Agency"]),
-                                html.Li([html.Span("NASA: ", style={"font-weight": "bold"}), "National Aeronautics and Space Administration"]),
-                                html.Li([html.Span("UKMO: ", style={"font-weight": "bold"}), "United Kingdom Meteorological Office"]),
-                                html.Li([html.Span("MOI: ", style={"font-weight": "bold"}), "Mercator Ocean International"])
-                            ], style={"margin-bottom": "20px"}),  # Add space between lists
-                            html.H4("Program", style={"font-weight": "bold"}),  # Heading
-                            html.Ul([  # Unordered list
-                                html.Li([html.Span("GlobColour: ", style={"font-weight": "bold"}), "Ocean Colour"]),
-                                html.Li([html.Span("GHRSST: ", style={"font-weight": "bold"}), "Group for High Resolution Sea Surface Temperature"]),
-                                html.Li([html.Span("NEMO: ", style={"font-weight": "bold"}), "Nucleus for European Modelling of the Ocean"]),
-                                html.Li([html.Span("PISCES: ", style={"font-weight": "bold"}), "Pelagic Interactions Scheme for Carbon and Ecosystem Studies"]),
-                                html.Li([html.Span("SEAPODYM: ", style={"font-weight": "bold"}), "Spatial Ecosystem and Population Dynamics Model"]),
-                                html.Li([html.Span("MODIS: ", style={"font-weight": "bold"}), "Moderate Resolution Imaging Spectroradiometer"]),
-                                html.Li([html.Span("OLCI: ", style={"font-weight": "bold"}), "Ocean and Land Colour Instrument"]),
-                                html.Li([html.Span("OSTIA: ", style={"font-weight": "bold"}), "Operational Sea Surface Temperature and Sea Ice Analysis"]),
-                            ], style={"margin-bottom": "20px"})  # Add space between lists
-                        ], style={"padding": "10px", "flex": "1"})  # Right column with the full forms
-                    ], style={"background-color": "#f8f9fa", "padding": "20px", "border-radius": "5px", "display": "flex", "gap": "20px"})  # Shared background with flexbox
-                ], width=12)
+                        html.H4("Agencies", style={"font-weight": "bold"}),  # Heading
+                        html.Ul([  # Unordered list
+                            html.Li([html.Span("ESA: ", style={"font-weight": "bold"}), "European Space Agency"]),
+                            html.Li([html.Span("NASA: ", style={"font-weight": "bold"}), "National Aeronautics and Space Administration"]),
+                            html.Li([html.Span("UKMO: ", style={"font-weight": "bold"}), "United Kingdom Meteorological Office"]),
+                            html.Li([html.Span("MOI: ", style={"font-weight": "bold"}), "Mercator Ocean International"])
+                        ], style={"margin-bottom": "20px"}),  # Add space between lists
+                        html.H4("Program", style={"font-weight": "bold"}),  # Heading
+                        html.Ul([  # Unordered list
+                            html.Li([html.Span("GlobColour: ", style={"font-weight": "bold"}), "Ocean Colour"]),
+                            html.Li([html.Span("GHRSST: ", style={"font-weight": "bold"}), "Group for High Resolution Sea Surface Temperature"]),
+                            html.Li([html.Span("NEMO: ", style={"font-weight": "bold"}), "Nucleus for European Modelling of the Ocean"]),
+                            html.Li([html.Span("PISCES: ", style={"font-weight": "bold"}), "Pelagic Interactions Scheme for Carbon and Ecosystem Studies"]),
+                            html.Li([html.Span("SEAPODYM: ", style={"font-weight": "bold"}), "Spatial Ecosystem and Population Dynamics Model"]),
+                            html.Li([html.Span("MODIS: ", style={"font-weight": "bold"}), "Moderate Resolution Imaging Spectroradiometer"]),
+                            html.Li([html.Span("OLCI: ", style={"font-weight": "bold"}), "Ocean and Land Colour Instrument"]),
+                            html.Li([html.Span("OSTIA: ", style={"font-weight": "bold"}), "Operational Sea Surface Temperature and Sea Ice Analysis"]),
+                        ], style={"margin-bottom": "20px"})  # Add space between lists
+                    ], style={"padding": "10px", "flex": "1"})  # Right column with the full forms
+                ], width=6),
+                dbc.Col([
+                    dcc.Graph(figure=create_sunburst_chart()),  # Left column with the figure
+                ], width=6)
             ], style={"margin-bottom": "20px"}),
-            # Footer with contact information
-            dbc.Container([
-                html.Hr(),
-                dbc.Row([
-                    dbc.Col([
-                        html.P("© 2024 Md Rony Golder. All rights reserved.", style={"text-align": "center"}),
-                        html.A("MD RONY GOLDER", href="mailto:mdrony.golder@uwa.edu.au", style={"display": "block", "text-align": "center", "color": "blue"}),
-                    ], width=12),
-                ]),
-            ], fluid=True, style={"padding": "20px 0", "background-color": "#f8f9fa"}),
-        ])
+        ]),
+
+        # Interactive map with title
+        dbc.Container([
+            dbc.Row([
+                dbc.Col(html.H4("Dataset Position Map", className="text-center mb-4"), width=12)
+            ]),
+            dbc.Row([
+                dbc.Col(html.Div([
+                    html.Iframe(
+                        src="https://curtin.maps.arcgis.com/apps/instant/basic/index.html?appid=dd40758d043c4871bc6aedfc6bd178c8",
+                        style={"border": "0", "width": "100%", "height": "600px"},
+                    ),
+                    html.P("iFrames are not supported on this page.", style={"display": "none"})
+                ]), width=12)
+            ])
+        ], style={"margin-bottom": "20px"}),
+
+        # Footer with contact information
+        dbc.Container([
+            html.Hr(),
+            dbc.Row([
+                dbc.Col([
+                    html.P("© 2024 Md Rony Golder. All rights reserved.", style={"text-align": "center"}),
+                    html.A("MD RONY GOLDER", href="mailto:mdrony.golder@uwa.edu.au", style={"display": "block", "text-align": "center", "color": "blue"}),
+                ], width=12),
+            ]),
+        ], fluid=True, style={"padding": "20px 0", "background-color": "#f8f9fa"}),
     ])
