@@ -23,10 +23,8 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Python dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgeos-dev
+      - name: Install system dependencies
+        run: sudo apt-get install -y libgeos-dev
 
       - name: Create and start virtual environment
         run: |
@@ -39,18 +37,13 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3980C6A7293D47A29E58759DE91633C2 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F684E4BE690C4D5493BAE1054F1272A6 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_360F6C03F68D4CC1B4CA585F7D00A2E6 }}
-      - name: 'Deploy to Azure Web App'
+      - name: Login to Azure using publish profile
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
           app-name: 'csiem-dash-seaf'
-          slot-name: 'production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_85B346D7A59A45529B419EFF4698320B }}
+          package: .
 
     environment:
       name: 'production'

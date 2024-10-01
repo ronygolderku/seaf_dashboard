@@ -2,6 +2,7 @@ from dash import dcc, html, Input, Output, State, callback
 import dash_bootstrap_components as dbc
 import geopandas as gpd
 import pandas as pd
+import fiona
 import os
 import dash_leaflet as dl
 from dash import dcc, html
@@ -22,8 +23,9 @@ shapefiles = [
 geojson_data = {}
 for shapefile in shapefiles:
     try:
-        gdf = gpd.read_file(shapefile)
-        geojson_data[os.path.basename(shapefile)] = gdf.__geo_interface__
+        with fiona.open(shapefile) as src:
+            gdf = gpd.GeoDataFrame.from_features(src)
+            geojson_data[os.path.basename(shapefile)] = gdf.__geo_interface__
     except Exception as e:
         print(f"Error reading {shapefile}: {e}")
 
