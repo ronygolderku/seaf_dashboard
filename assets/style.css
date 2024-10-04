@@ -78,6 +78,7 @@ body {
     flex: 1 1 30%;  /* Allows flexibility for responsiveness */
     padding: 10px;
     box-sizing: border-box;
+    height: 100vh;  /* Full height */
 }
 
 /* Right panel (Controls) */
@@ -85,6 +86,7 @@ body {
     flex: 1 1 65%;
     padding: 10px;
     box-sizing: border-box;
+    height: 100vh;  /* Full height */
 }
 
 /* Control elements in the right panel */

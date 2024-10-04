@@ -114,7 +114,7 @@ def home_layout():
                             "margin": "0 auto"
                         })
                     ])
-                ], style={"background-color": "#a4c126", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
+                ], style={"background-color": "#a4c126", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=12, md=4),
                 dbc.Col(dbc.Card([
                     dbc.CardBody([
                         html.H4("Total Datasets", className="card-title", style={"text-align": "center", "font-weight": "bold"}),
@@ -129,7 +129,7 @@ def home_layout():
                             "margin": "0 auto"
                         })
                     ])
-                ], style={"background-color": "#008bad", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
+                ], style={"background-color": "#008bad", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=12, md=4),
                 dbc.Col(dbc.Card([
                     dbc.CardBody([
                         html.H4("Variables", className="card-title", style={"text-align": "center", "font-weight": "bold"}),
@@ -144,7 +144,7 @@ def home_layout():
                             "margin": "0 auto"
                         })
                     ])
-                ], style={"background-color": "#f3bc00", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=4),
+                ], style={"background-color": "#f3bc00", "border": "1px solid #dee2e6", "padding": "10px", "margin": "10px"}), width=12, md=4),
             ], className="mb-4"),
         ]),
 
@@ -172,10 +172,10 @@ def home_layout():
                             html.Li([html.Span("OSTIA: ", style={"font-weight": "bold"}), "Operational Sea Surface Temperature and Sea Ice Analysis"]),
                         ], style={"margin-bottom": "20px"})  # Add space between lists
                     ], style={"padding": "10px", "flex": "1"})  # Right column with the full forms
-                ], width=6),
+                ], width=12, md=6),
                 dbc.Col([
                     dcc.Graph(figure=create_sunburst_chart()),  # Left column with the figure
-                ], width=6)
+                ], width=12, md=6)
             ], style={"margin-bottom": "20px"}),
         ]),
 

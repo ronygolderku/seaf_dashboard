@@ -30,19 +30,30 @@ for shapefile in shapefiles:
         print(f"Error reading {shapefile}: {e}")
 
 # Create point markers
-def create_points_layer(selected_point=None):
+def create_points_layer(point_limit, selected_point=None):
     points_layer = []
     for idx, row in points_df.iterrows():
+        if idx >= point_limit:
+            break  # Stop when the point limit is reached
         color = "red" if selected_point and selected_point == idx + 1 else "blue"
         points_layer.append(
             dl.Marker(
                 position=[row['latitude'], row['longitude']],
-                children=dl.Tooltip(f"Point: {row['Points']}, Location: {row['label']}")),
+                children=dl.Tooltip(f"Point: {row['Points']}, Location: {row['label']}"),
+            ),
         )
     return points_layer
 
 # Create a generic layout function
 def create_layout(title, map_id, variable_options, dataset_type, geojson_data, point_range, dataset_info, wmts_layers, layer_name):
+    # set point limit: 32 for olci and ghrsst, 13 for others
+    if dataset_type in ['olci', 'mur']:
+        point_limit = 32
+    else:
+        point_limit = 13
+    
+    points_layer = dl.LayerGroup(create_points_layer(point_limit), id="points-layer")
+
     return html.Div([
         html.H2(f'{title} Data Visualization', className="heading"),
         html.Hr(),
@@ -58,7 +69,7 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                             url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
                             id="ocean-basemap"
                         ),
-                        dl.LayerGroup(id="points-layer"),
+                        # dl.LayerGroup(id="points-layer"),
                         dl.ScaleControl(position="bottomleft"),
                         dl.FullScreenControl(),
 
@@ -75,7 +86,8 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     ), name="OpenStreetMap"
                                 ),
-                                dl.Overlay(dl.LayerGroup(id="points-layer"), name="Points", checked=False),
+                                dl.Overlay(points_layer, name="Points", checked=False),
+                                # dl.Overlay(dl.LayerGroup(id="points-layer"), name="Points", checked=False),
                                 dl.Overlay(
                                     dl.LayerGroup(
                                         [dl.GeoJSON(data=geojson_data[name], id=f"geojson-{name}") for name in geojson_data]
@@ -86,7 +98,7 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                             ], position="topright"
                         )
                     ],
-                    style={'width': '100%', 'height': '680px'},
+                    style={'width': '100%', 'height': '100%'},
                     center=[-32.1, 115.4], zoom=9, id=map_id
                 )
             ], className='left-panel'),  # CSS class for map responsiveness
@@ -128,7 +140,7 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                                             html.Label("Select Point"),
                                             dcc.Dropdown(
                                                 id="coordinate-input-point",
-                                                options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, point_range + 1)],
+                                                options=[{'label': f'Point {i}', 'value': str(i)} for i in range(1, point_range)],
                                                 className="input-dropdown"
                                             )
                                         ], id='point-selector', style={'display': 'none'}),
@@ -149,6 +161,7 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                                             html.Label("From"),
                                             dcc.DatePickerSingle(
                                                 id="start-date-picker",
+                                                display_format="DD/MM/YYYY",
                                                 placeholder="Start Date",
                                                 className="DatePickerSingle"
                                             )
@@ -158,6 +171,7 @@ def create_layout(title, map_id, variable_options, dataset_type, geojson_data, p
                                             html.Label("To"),
                                             dcc.DatePickerSingle(
                                                 id="end-date-picker",
+                                                display_format="DD/MM/YYYY",
                                                 placeholder="End Date",
                                                 className="DatePickerSingle"
                                             )

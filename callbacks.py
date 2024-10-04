@@ -330,11 +330,21 @@ def register_callbacks(app):
 
     # Update the map to highlight the selected point or polygon
     @app.callback(
-        [Output("points-layer", "children"), Output("highlighted-layer", "children")],
-        Input("highlight-data", "data")
-    )
-    def update_map_highlight(data):
-        points_layer = create_points_layer()
+    [Output("points-layer", "children"), Output("highlighted-layer", "children")],
+    [Input("highlight-data", "data"),
+     Input("dataset-type", "value")]  # Add dataset-type input
+)
+    def update_map_highlight(data, dataset_type):
+        # Set point limit based on dataset_type
+        if dataset_type in ['olci', 'mur']:
+            point_limit = 32
+        else:
+            point_limit = 13
+
+        # Create points layer with point limit
+        points_layer = create_points_layer(point_limit)
+
+        # Initialize highlighted layer
         highlighted_layer = []
 
         if data:
@@ -359,4 +369,6 @@ def register_callbacks(app):
                     id="highlighted-polygon",
                     options=dict(style=dict(color="red", weight=5, fillOpacity=0.1))
                 ))
+
+        # Return updated points and highlighted layers
         return points_layer, highlighted_layer
