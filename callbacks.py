@@ -14,7 +14,13 @@ from s3_fetch import s3_client, fetch_data_from_s3
 polygon_key_mapping = {str(i): f"Polygons_{i}_MultiPolygon.shp" for i in range(1, 7)}  # Ensure ".shp" extension
 variable_info = {
     'CHL': {'label': 'Chlorophyll-a [mg/m³]', 'value': 'CHL'},
-    'analysed_sst': {'label': 'Sea Surface Temperature [°C]', 'value': 'analysed_sst'},
+    'analysed_sst': {
+        'label': {
+            'celsius': 'Sea Surface Temperature [°C]',
+            'kelvin': 'Sea Surface Temperature [°K]'
+        },
+        'value': 'analysed_sst'
+    },
     'KD490': {'label': 'diffuse attenuation coefficient at 490 nm [m-¹]', 'value': 'KD490'},
     'ZSD': {'label': 'Secchi disk depth [m]', 'value': 'ZSD'},
     'SPM': {'label': 'Suspended particulate matter [g/m³]', 'value': 'SPM'},
@@ -37,7 +43,7 @@ variable_info = {
     'PP': {'label': 'Primary Production [mg C m⁻² day⁻¹]', 'value': 'PP'},
     'pic': {'label': 'Particulate Inorganic Carbon [mg m⁻³]', 'value': 'pic'},
     'poc': {'label': 'Particulate Organic Carbon [mg m⁻³]', 'value': 'poc'},
-    'par': {'label': 'Photosynthetically Available Radiation [Einstein m⁻² d⁻¹]', 'value': 'par'},
+    'par': {'label': 'PAR [Einstein m⁻² d⁻¹]', 'value': 'par'},
     'nppv': {'label': 'Net Primary Production [mg C m⁻² day⁻¹]', 'value': 'nppv'},
     'o2': {'label': 'Dissolved Oxygen [mmol m⁻³]', 'value': 'o2'},
     'fe': {'label': 'Dissolved Iron [mmol m⁻³]', 'value': 'fe'},
@@ -264,24 +270,37 @@ def register_callbacks(app):
         # Convert 'time' column to datetime if it exists
         if 'time' in df.columns:
             df['time'] = pd.to_datetime(df['time'])
+
         # Filter data by date range
         if start_date and end_date:
             df = df[(df['time'] >= start_date) & (df['time'] <= end_date)]
 
-            # Retrieve the label and value for the variable
-        variable_info_entry = variable_info.get(variable, {})
-        variable_label = variable_info_entry.get('label', variable.capitalize())
-        variable_value = variable_info_entry.get('value', variable)
+    # Retrieve the correct label for the variable based on dataset_type
+        if variable == 'analysed_sst':
+            # Check dataset type (celsius or kelvin)
+            if dataset_type == 'mur':
+                variable_label = variable_info['analysed_sst']['label']['celsius']
+            elif dataset_type == 'ostia':
+                variable_label = variable_info['analysed_sst']['label']['kelvin']
+            else:
+                variable_label = variable.capitalize()  # Fallback if dataset_type is unknown
+            # Since the data column remains 'analysed_sst' for both cases
+            variable_value = 'analysed_sst'
+        else:
+            # For other variables, retrieve the label normally
+            variable_info_entry = variable_info.get(variable, {})
+            variable_label = variable_info_entry.get('label', variable.capitalize())
+            variable_value = variable_info_entry.get('value', variable)
 
         # Create the line chart
         fig = px.line(df, x='time', y=variable_value, title=title)
 
-        # Update the layout to set the font
+        # Update the layout to set the font, axis labels, and formatting
         fig.update_layout(
             font=dict(
                 family="Times New Roman",
-                size=18,  # You can adjust the size as needed
-                color="Black"  # You can adjust the color as needed
+                size=18,  # Adjust font size as needed
+                color="Black"  # Adjust color as needed
             ),
             title=dict(
                 font=dict(size=24, color="#2c3e50"),  # Customize title font and color
@@ -290,19 +309,20 @@ def register_callbacks(app):
                 yanchor='top'
             ),
             xaxis_title="Time",  # Customize X-axis label
-            yaxis_title=variable_label,  # Capitalize variable name for Y-axis label
+            yaxis_title=variable_label,  # Y-axis label from `variable_info`
             xaxis=dict(showgrid=False),  # Hide gridlines for cleaner look
             yaxis=dict(showgrid=True, gridcolor='#dddddd'),  # Lighter gridlines for Y-axis
             template="plotly_white",  # Apply a cleaner, modern template
             plot_bgcolor='#fafafa',  # Light background color
             hovermode="x unified",  # Unified hover tooltip for a cleaner display
             margin=dict(l=50, r=50, t=50, b=50)  # Adjust margins for better spacing
-            )
+        )
 
         # Add hover text format (optional, for extra info on hover)
         fig.update_traces(hovertemplate='%{x}: %{y:.2f}')
 
         return fig
+
     
      # Highlight point/polygon on the map when plot button is clicked
     @app.callback(
