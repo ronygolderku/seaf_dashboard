@@ -22,7 +22,7 @@ def create_dataset_div(title, description, points, polygons, sp_resolution, tp_r
         ]),
         html.P([
             "If you are interested in the raw data, you can access it ",
-            html.A("here", href=raw_data_link)
+            html.A("here", href=raw_data_link, target="_blank")
         ]),
         html.P([
             "If you need the processed data, kindly contact ",
@@ -51,20 +51,20 @@ mur = create_dataset_div(
     polygons=6,
     sp_resolution="1 km",
     tp_resolution="Daily",
-    date_range="01/01/2024 to the present",
+    date_range="01/06/2002 to the present",
     raw_data_link="https://podaac.jpl.nasa.gov/dataset/MUR-JPL-L4-GLOB-v4.1",
     contact_email="brendan.busch@uwa.edu.au"
 )
 
 plankton = create_dataset_div(
     title='Satellite Plankton Data',
-    description="The Plankton data is sourced from the MODIS satellite.",
+    description="The Reflectance data is sourced from the Globcolour Copernicus merge product. This product is a merged product of the Globcolour project and the Copernicus Marine Environment Monitoring Service (CMEMS). This product is a combination of different satellite sensors including MERIS, MODIS, SeaWiFS, VIIRS, and Sentinel-3 OLCI.",
     points=13,
     polygons=6,
     sp_resolution="4 km",
     tp_resolution="Daily",
-    date_range="01/03/2022 to the present",
-    raw_data_link="https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdMPICmday_R2022NRT.html",
+    date_range="04/09/1997 to the present",
+    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L3_MY_009_103/description",
     contact_email="brendan.busch@uwa.edu.au"
 )
 
@@ -76,7 +76,7 @@ reflectance = create_dataset_div(
     sp_resolution="4 km",
     tp_resolution="Daily",
     date_range="04/09/1997 to the present",
-    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L4_MY_009_104/description",
+    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L3_MY_009_103/description",
     contact_email="brendan.busch@uwa.edu.au"
 )
 
@@ -88,7 +88,7 @@ transp = create_dataset_div(
     sp_resolution="4 km",
     tp_resolution="Daily",
     date_range="04/09/1997 to the present",
-    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L4_MY_009_104/description",
+    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L3_MY_009_103/description",
     contact_email="brendan.busch@uwa.edu.au"
 )
 
@@ -100,7 +100,7 @@ optics = create_dataset_div(
     sp_resolution="4 km",
     tp_resolution="Daily",
     date_range="04/09/1997 to the present",
-    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L4_MY_009_104/description",
+    raw_data_link="https://data.marine.copernicus.eu/product/OCEANCOLOUR_GLO_BGC_L3_MY_009_103/description",
     contact_email="brendan.busch@uwa.edu.au"
 )
 
@@ -123,7 +123,7 @@ ostia = create_dataset_div(
     polygons=6,
     sp_resolution="5 km",
     tp_resolution="Daily",
-    date_range="01/01/2006 to the present",
+    date_range="01/10/1981 to the present",
     raw_data_link="https://resources.marine.copernicus.eu/?option=com_csw&view=details&product_id=SEALEVEL_GLO_PHY_L4_NRT_OBSERVATIONS_008_047",
     contact_email="brendan.busch@uwa.edu.au"
 )
@@ -135,7 +135,7 @@ pic = create_dataset_div(
     polygons=6,
     sp_resolution="4 km",
     tp_resolution="Monthly",
-    date_range="01/03/2022 to the present",
+    date_range="16/01/2003 to the present",
     raw_data_link="https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdMPICmday_R2022NRT.html",
     contact_email="brendan.busch@uwa.edu.au"
 )
@@ -147,7 +147,7 @@ poc = create_dataset_div(
     polygons=6,
     sp_resolution="4 km",
     tp_resolution="Monthly",
-    date_range="01/03/2022 to the present",
+    date_range="16/01/2003 to the present",
     raw_data_link="https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdMPOCmday_R2022NRT.html",
     contact_email="brendan.busch@uwa.edu.au"
 )
@@ -159,7 +159,7 @@ par = create_dataset_div(
     polygons=6,
     sp_resolution="4 km",
     tp_resolution="Monthly",
-    date_range="01/03/2022 to the present",
+    date_range="16/01/2003 to the present",
     raw_data_link="https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdMH1par0mday_R2022NRT.html",
     contact_email="brendan.busch@uwa.edu.au"
 )

@@ -448,7 +448,7 @@ def ostia_layout():
                 opacity=0.7,
                 attribution="Copernicus Marine Service"
             ),
-            name="CMEMS SST",
+            name="UKMO SST",
             checked=False  # Set to False if you want the layer off by default
         )
     ]
