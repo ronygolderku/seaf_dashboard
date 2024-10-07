@@ -12,7 +12,7 @@ def generate_sunburst_data():
         ["ESA", "Globcolor", "Plankton", "CHL, DIATO, DINO, GREEN, HAPTO, MICRO, NANO, PICO, PROCHLO, PROKAR"],
         ["ESA", "Globcolor", "PP", "PP"],
         ["ESA", "Sentinel", "OLCI", "Chl-a"],
-        ["UKMO", "GHRSST", "OSTIA", "Temp"],
+        ["UKMO", "UKMO", "OSTIA", "Temp"],
         ["NASA", "MODIS", "MODIS", "POC, PIC, PAR"],
         ["NASA", "GHRSST", "MUR", "SST"],
         ["MOI", "PISCES", "BIO", "NPPV, O₂"],
